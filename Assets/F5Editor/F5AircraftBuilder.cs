@@ -34,6 +34,7 @@ public static class F5AircraftBuilder {
   ds.FindProperty("spawnOffset").vector3Value=new Vector3(0,1.55f,-1.25f);ds.FindProperty("aircraftParameters").objectReferenceValue=parameters;ds.ApplyModifiedPropertiesWithoutUndo();
   var ps=new SerializedObject(parameters);Set(ps,"aircraftName","F-5E Tiger II");ps.FindProperty("liveries").arraySize=0;ps.ApplyModifiedPropertiesWithoutUndo();
   AssetDatabase.CreateAsset(def,R+"/F5Definition.asset");AssetDatabase.CreateAsset(parameters,R+"/F5Parameters.asset");
+  ConfigureLivery(parameters);
   var root=Object.Instantiate((GameObject)F5Pipeline.Native("Fighter1",".prefab"));root.name=Key;
   try {
    foreach(var lod in root.GetComponentsInChildren<LODGroup>(true))lod.enabled=false;
@@ -135,8 +136,11 @@ public static class F5AircraftBuilder {
    if(n=="rudder")source="Rudder";
    if(n.StartsWith("vstab"))source="VTail";
    if(n.StartsWith("intake"))source=left?"LInlet":"RInlet";
-   if(source==null){continue;} // Native fuselage contacts remain a conservative initial approximation.
+   bool body=n=="fuselage"||n=="tail"||n=="cockpit"||n=="nose"||n.StartsWith("weaponbay")||collider.transform==root.transform;
+   if(body)source="fuselage";
+   if(source==null){continue;}
    var b=BoundsOf(own.First(m=>m.name==source));
+   if(body){var old=collider.bounds;var min=b.min;var max=b.max;min.z=Mathf.Clamp(old.min.z,b.min.z,b.max.z-.05f);max.z=Mathf.Clamp(old.max.z,min.z+.05f,b.max.z);b.SetMinMax(min,max);}
    if(n.StartsWith("vstab")){var min=b.min;var max=b.max;if(n=="vstab1")max.y=b.center.y;else min.y=b.center.y;b.SetMinMax(min,max);}
    if(n.StartsWith("wing")){var min=b.min;var max=b.max;float a=n.StartsWith("wingtip")?3.3f:n.StartsWith("wing2")?2.1f:0.7f;float end=n.StartsWith("wingtip")?4.1f:n.StartsWith("wing2")?3.3f:2.1f;min.x=left?-end:a;max.x=left?-a:end;if(n.StartsWith("wing1b"))max.z=b.center.z;else if(n.StartsWith("wing1a"))min.z=b.center.z;b.SetMinMax(min,max);}
    var local=new Bounds(collider.transform.InverseTransformPoint(b.center),Vector3.zero);foreach(int x in new[]{-1,1})foreach(int y in new[]{-1,1})foreach(int z in new[]{-1,1})local.Encapsulate(collider.transform.InverseTransformPoint(b.center+Vector3.Scale(b.extents,new Vector3(x,y,z))));
@@ -172,6 +176,14 @@ public static class F5AircraftBuilder {
    if(names.Count>0)op.hangars.Add(new OpAddAircraftToHangars.HangarTarget{hangarUnitJsonKey=so.FindProperty("jsonKey").stringValue,hangarNames=names});
   }if(op.hangars.Count==0)throw new Exception("No compatible hangars");AssetDatabase.CreateAsset(op,R+"/F5Hangars.asset");
  }
+ static void ConfigureLivery(ScriptableObject parameters) {
+  string path=R+"/F5Silver.asset";var livery=AssetDatabase.LoadMainAssetAtPath(path);
+  if(!livery){var type=AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType("LiveryData")).First(t=>t!=null);livery=ScriptableObject.CreateInstance(type);AssetDatabase.CreateAsset(livery,path);}
+  var ls=new SerializedObject(livery);ls.FindProperty("Texture").objectReferenceValue=AssetDatabase.LoadAssetAtPath<Texture2D>(R+"/Models/fuselage.png");ls.FindProperty("Glossiness").floatValue=.25f;ls.FindProperty("Colors").arraySize=0;ls.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(livery);
+  var donor=new SerializedObject(F5Pipeline.Native("Fighter1Parameters",".asset"));var ps=new SerializedObject(parameters);var entries=ps.FindProperty("liveries");entries.arraySize=2;
+  for(int i=0;i<2;i++){var entry=entries.GetArrayElementAtIndex(i);entry.FindPropertyRelative("name").stringValue="F-5E Silver";entry.FindPropertyRelative("faction").objectReferenceValue=donor.FindProperty("liveries").GetArrayElementAtIndex(i).FindPropertyRelative("faction").objectReferenceValue;entry.FindPropertyRelative("assetReference").FindPropertyRelative("m_AssetGUID").stringValue=AssetDatabase.AssetPathToGUID(path);}
+  ps.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(parameters);
+ }
  static void CreateIcon() {
   // Render the aircraft's own mesh into a silhouette; no unrelated image assets.
   var model=Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(R+"/Models/f5emin.obj"));model.transform.position=new Vector3(0,1000,0);
@@ -189,6 +201,7 @@ public static class F5AircraftBuilder {
   if(root.GetComponentsInChildren<Component>(true).Any(c=>!c))throw new Exception("Missing native script");
   if(root.GetComponentsInChildren<Component>(true).Count(c=>c&&c.GetType().Name=="LandingGear")!=3)throw new Exception("Expected 3 gears");
   if(!ds.FindProperty("mapIcon").objectReferenceValue)throw new Exception("Own icon missing");
+  if(ps.FindProperty("liveries").arraySize<2)throw new Exception("Both factions require a selectable livery");
   var report="Tier: 2\nPrice: 14000000\nNative landing gears: 3\nOwn icon: assigned\nNative systems: retained\nIn-game flight: NOT TESTED\n";File.WriteAllText("../../work/f5/build-validation.txt",report);
  }
  public static void BuildAndPreview(){Build();F5PreviewRender.Capture();}

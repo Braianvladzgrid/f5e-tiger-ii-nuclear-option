@@ -396,7 +396,21 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 6a2e59e168bceee45a2b0317338732b7, type: 2}
   StandardLoadouts: []
   DefaultFuelLevel: 1
-  liveries: []
+  liveries:
+  - name: F-5E Silver
+    faction: {fileID: 11400000, guid: a7a76c7eda568b844af47ceeb429a0fc, type: 2}
+    assetReference:
+      m_AssetGUID: b631f3d5b755227408aa9875a9f52d9d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - name: F-5E Silver
+    faction: {fileID: 11400000, guid: 54d0a521f27bc2443899265eb7500e8e, type: 2}
+    assetReference:
+      m_AssetGUID: b631f3d5b755227408aa9875a9f52d9d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
   StatusDisplay: {fileID: 1709254077376921, guid: f600d7f7a0424ce4bbbe266fd9857703,
     type: 3}
   HUDExtras: {fileID: 1709254077376921, guid: 77eaa06de1384af438893f09241aa346, type: 3}

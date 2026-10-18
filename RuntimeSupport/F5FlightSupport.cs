@@ -13,12 +13,29 @@ using System.Reflection.Emit;
 [BepInPlugin("vladzgrid.f5.flightsupport", "F-5E Flight Support", "0.1.0")]
 public sealed class F5FlightFix : BaseUnityPlugin
 {
+    float nextScan;
     void Awake() { new Harmony("vladzgrid.f5.flightsupport").PatchAll(typeof(F5FlightFix)); }
     void Update()
     {
         // Blueprinter finishes adding custom children after the donor's Awake.
-        Aircraft local;
-        if(GameManager.GetLocalAircraft(out local))SourceGearVisuals(local);
+        if(Time.unscaledTime<nextScan)return;
+        nextScan=Time.unscaledTime+.5f;
+        foreach(var plane in UnityEngine.Object.FindObjectsOfType<Aircraft>(true)) {
+            if(!plane.definition||plane.definition.jsonKey!="F5E_TigerII"||plane.partLookup==null)continue;
+            SourceGearVisuals(plane);
+            var roots=plane.partLookup.OfType<AeroPart>().Select(p=>p.transform).Concat(new[]{plane.transform}).Distinct();
+            foreach(var root in roots) {
+                foreach(var mesh in root.GetComponentsInChildren<MeshFilter>(true)) {
+                    string name=mesh.name;
+                    if(name.StartsWith("wheel_")||name.StartsWith("gear_")||name.StartsWith("geardoor")||name.StartsWith("gearHinge"))mesh.sharedMesh=null;
+                }
+                foreach(var t in root.GetComponentsInChildren<Transform>(true)) {
+                    if(t.name=="gearlight_F")t.gameObject.SetActive(false);
+                    if(t.name=="navlight_effects_L")t.position=plane.transform.TransformPoint(new Vector3(-4.02f,0,-.1f));
+                    if(t.name=="navlight_effects_R")t.position=plane.transform.TransformPoint(new Vector3(4.02f,0,-.1f));
+                }
+            }
+        }
     }
 
     [HarmonyPatch(typeof(Aircraft), "Awake"), HarmonyPostfix]
@@ -100,7 +117,7 @@ public sealed class F5GearAnimation : MonoBehaviour
 {
     sealed class Track { public Transform pivot; public Quaternion rest; public AnimationCurve curve; public LandingGear gear; public bool compression; }
     sealed class Visibility { public Transform root; public LandingGear gear; }
-    sealed class Wheel {public Transform pivot;public Quaternion rest;public LandingGear gear;public float angle;}
+    sealed class Wheel {public Transform pivot;public Quaternion rest;public Vector3 position;public LandingGear gear;public float angle;}
     readonly System.Collections.Generic.List<Wheel> wheels=new System.Collections.Generic.List<Wheel>();
     readonly System.Collections.Generic.List<Track> tracks = new System.Collections.Generic.List<Track>();
     readonly System.Collections.Generic.List<Visibility> visibility = new System.Collections.Generic.List<Visibility>();
@@ -141,7 +158,7 @@ public sealed class F5GearAnimation : MonoBehaviour
             var gear=gears.FirstOrDefault(g=>g.name==(data[1]=="F"?"gear_F":"gear_"+data[1]+"_sprung"));
             if(!gear)continue;
             if(data[0]=="F5GearVisible")visibility.Add(new Visibility {root=t,gear=gear});
-            if(data[0]=="F5GearWheel")wheels.Add(new Wheel {pivot=t,rest=t.localRotation,gear=gear});
+            if(data[0]=="F5GearWheel")wheels.Add(new Wheel {pivot=t,rest=t.localRotation,position=t.localPosition,gear=gear});
             if((data[0]!="F5GearCurve"&&data[0]!="F5GearCompression")||data.Length<3)continue;
             var curve=new AnimationCurve();
             foreach(var pair in data[2].Split(';')){
@@ -176,6 +193,7 @@ public sealed class F5GearAnimation : MonoBehaviour
         }
         foreach(var v in visibility)if(v.root&&v.gear)v.root.gameObject.SetActive(Extension(v.gear)>.001f);
         foreach(var w in wheels)if(w.pivot&&w.gear){
+            w.pivot.localPosition=w.position+w.pivot.parent.InverseTransformVector(aircraft.transform.up*(float)Compression.GetValue(w.gear));
             w.angle=(w.angle+(float)WheelSpeed.GetValue(w.gear)/(float)WheelRadius.GetValue(w.gear)*Mathf.Rad2Deg*Time.deltaTime)%360;
             w.pivot.localRotation=w.rest*Quaternion.AngleAxis(w.angle,Vector3.right);
         }
