@@ -14,6 +14,16 @@ using System.Reflection.Emit;
 public sealed class F5FlightFix : BaseUnityPlugin
 {
     float nextScan;
+    static int collisionReports;
+    [HarmonyPatch(typeof(AeroPart), "OnCollisionEnter"), HarmonyPrefix]
+    static void CollisionReport(AeroPart __instance, Collision __0) {
+        var plane=__instance.parentUnit as Aircraft;
+        if(!IsF5(plane)||collisionReports++>60)return;
+        Debug.Log("[F5Contact] part="+__instance.name+" other="+__0.collider.name+" impulse="+__0.impulse.magnitude+" relative="+__0.relativeVelocity+" own="+__0.GetContact(0).thisCollider.name);
+    }
+    static bool IsF5(Aircraft plane) {
+        return plane && ((plane.definition&&plane.definition.jsonKey=="F5E_TigerII") || plane.name.StartsWith("F5") || plane.transform.Find("F5Exterior") || plane.transform.Find("F5GearVisuals"));
+    }
     void Awake() { new Harmony("vladzgrid.f5.flightsupport").PatchAll(typeof(F5FlightFix)); }
     void Update()
     {
@@ -21,7 +31,7 @@ public sealed class F5FlightFix : BaseUnityPlugin
         if(Time.unscaledTime<nextScan)return;
         nextScan=Time.unscaledTime+.5f;
         foreach(var plane in UnityEngine.Object.FindObjectsOfType<Aircraft>(true)) {
-            if(!plane.definition||plane.definition.jsonKey!="F5E_TigerII"||plane.partLookup==null)continue;
+            if(!IsF5(plane)||plane.partLookup==null)continue;
             SourceGearVisuals(plane);
             var roots=plane.partLookup.OfType<AeroPart>().Select(p=>p.transform).Concat(new[]{plane.transform}).Distinct();
             foreach(var root in roots) {
@@ -41,7 +51,7 @@ public sealed class F5FlightFix : BaseUnityPlugin
     [HarmonyPatch(typeof(Aircraft), "Awake"), HarmonyPostfix]
     static void SourceGearVisuals(Aircraft __instance)
     {
-        if (__instance.definition && __instance.definition.jsonKey == "F5E_TigerII"
+        if (IsF5(__instance)
             && __instance.transform.Find("F5GearVisuals")
             && !__instance.GetComponent<F5GearAnimation>())
             __instance.gameObject.AddComponent<F5GearAnimation>();
@@ -52,7 +62,7 @@ public sealed class F5FlightFix : BaseUnityPlugin
     [HarmonyPatch(typeof(Aircraft), "GetInputs"), HarmonyPostfix]
     static void ManualBrakeOnly(Aircraft __instance, ControlInputs __result)
     {
-        if (!__instance.definition || __instance.definition.jsonKey != "F5E_TigerII"
+        if (!IsF5(__instance)
             || __result == null || !Rewired.ReInput.isReady) return;
         Aircraft local;
         if (!GameManager.GetLocalAircraft(out local) || local != __instance) return;
@@ -73,8 +83,7 @@ public sealed class F5FlightFix : BaseUnityPlugin
     {
         var plane=(Aircraft)AccessTools.Field(typeof(LandingGear),"aircraft").GetValue(gear);
         Aircraft local;
-        if(plane && plane.definition && plane.definition.jsonKey!="F5E_TigerII") {var other=AccessTools.TypeByName("Su25FlightFix");var method=other==null?null:AccessTools.Method(other,"AutomaticBrakeThreshold");return method==null?1f:(float)method.Invoke(null,new object[]{gear});}
-        return plane && plane.definition && plane.definition.jsonKey=="F5E_TigerII"
+        return plane && (IsF5(plane) || (plane.definition&&plane.definition.jsonKey=="Su25_Frogfoot"))
             && GameManager.GetLocalAircraft(out local) && plane==local ? -1f : 1f;
     }
     [HarmonyPatch(typeof(LandingGear), "FixedUpdate"), HarmonyTranspiler, HarmonyPriority(Priority.Last)]
@@ -101,13 +110,16 @@ public sealed class F5FlightFix : BaseUnityPlugin
     [HarmonyPatch(typeof(Aircraft), "SetComplexPhysics"), HarmonyPostfix]
     static void SetMassStations(Aircraft __instance)
     {
-        if (!__instance.definition || __instance.definition.jsonKey != "F5E_TigerII") return;
+        if(IsF5(__instance)||(__instance.definition&&__instance.definition.jsonKey=="Fighter1"))Debug.Log("[F5Physics] identity name="+__instance.name+" key="+(__instance.definition?__instance.definition.jsonKey:"null")+" sourceVisual="+(__instance.transform.Find("F5Exterior")!=null));
+        if (!IsF5(__instance)) return;
+        Debug.Log("[F5Physics] complex bodies name="+__instance.name+" key="+(__instance.definition?__instance.definition.jsonKey:"null")+" parts="+__instance.partLookup.Count);
         SourceGearVisuals(__instance);
         var bodies = new HashSet<Rigidbody>();
         foreach (var part in __instance.partLookup.OfType<AeroPart>())
             if (part.rb && bodies.Add(part.rb))
-                part.rb.centerOfMass = part.rb.transform.InverseTransformPoint(
-                    part.transform.position);
+            {   part.rb.centerOfMass = part.rb.transform.InverseTransformPoint(part.transform.position);
+                Debug.Log("[F5Body] "+part.name+" mass="+part.rb.mass+" position="+__instance.transform.InverseTransformPoint(part.transform.position)+" colliders="+string.Join(",",part.GetComponentsInChildren<Collider>(true).Select(c=>c.name+":"+c.bounds.min.y.ToString("F2")).ToArray()));
+            }
     }
 }
 

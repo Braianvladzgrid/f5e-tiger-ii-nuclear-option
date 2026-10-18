@@ -9,7 +9,7 @@ using UnityEngine;
 public static class F5GearRepair {
  const string R="Assets/Blueprinter/Mods/F5";
  static float N(XElement e,string key)=>float.Parse(e.Element(key).Value,CultureInfo.InvariantCulture);
- static Vector3 V(float x,float y,float z)=>new Vector3(y,z,-x)*.973f;
+ static Vector3 V(float x,float y,float z)=>new Vector3(-y,z,-x)*.973f;
  public static void Apply(){
   var root=PrefabUtility.LoadPrefabContents(R+"/F5.prefab");
   try {
@@ -29,7 +29,7 @@ public static class F5GearRepair {
      if(axis.Element("x1-m")!=null){center=V(N(axis,"x1-m"),N(axis,"y1-m"),N(axis,"z1-m"));direction=V(N(axis,"x2-m"),N(axis,"y2-m"),N(axis,"z2-m"))-center;}
      else {var c=a.Element("center");center=V(N(c,"x-m"),N(c,"y-m"),N(c,"z-m"));direction=V(N(axis,"x"),N(axis,"y"),N(axis,"z"));}
      // Reflection into Unity's aircraft handedness reverses rotation axes.
-     direction=-direction;
+     // The final source-to-Unity transform preserves handedness.
      bool compression=a.Element("property").Value.Contains("compression-norm");
      var curve=compression?"0,0;1,"+a.Element("factor").Value:string.Join(";",a.Element("interpolation").Elements("entry").Select(e=>e.Element("ind").Value+","+e.Element("dep").Value));
      string side=mesh.name.StartsWith("NGear")||mesh.name=="nose-well-cover"?"F":mesh.name.StartsWith("L")?"L":"R";

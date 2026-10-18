@@ -51,7 +51,7 @@ public static class F5AircraftBuilder {
    foreach(var skin in root.GetComponentsInChildren<SkinnedMeshRenderer>(true))skin.sharedMesh=null;
    var importer=(ModelImporter)AssetImporter.GetAtPath(R+"/Models/f5emin.obj");
    if(importer.globalScale!=1 || !importer.isReadable){importer.globalScale=1;importer.isReadable=true;importer.SaveAndReimport();}
-   var model=Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(R+"/Models/f5emin.obj"),root.transform);model.name="F5Exterior";model.transform.localPosition=Offset;model.transform.localScale=new Vector3(-.973f,.973f,.973f);
+   var model=Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(R+"/Models/f5emin.obj"),root.transform);model.name="F5Exterior";model.transform.localPosition=Offset;model.transform.localScale=Vector3.one*.973f;
    var own=model.GetComponentsInChildren<MeshFilter>(true).Where(m=>m.sharedMesh).ToArray();
    var cockpit=new GameObject("F5Cockpit");cockpit.transform.SetParent(root.transform,false);
    var nativeCockpit=T(root,"cockpit_interior");
@@ -129,6 +129,8 @@ public static class F5AircraftBuilder {
   Directory.CreateDirectory(R+"/Collision");var done=new HashSet<GameObject>();
   foreach(var collider in root.GetComponentsInChildren<MeshCollider>(true)) {
    if(!done.Add(collider.gameObject))continue;string n=collider.name;bool left=n.EndsWith("_L");string source=null;
+   // The F-5 has neither the donor's internal bay doors nor cheek fairings.
+   if(n.StartsWith("weaponbay")||n.StartsWith("cheek")){collider.enabled=false;continue;}
    if(n.StartsWith("wing"))source=left?"LWing":"RWing";
    if(n.StartsWith("aileron"))source=left?"LAileron":"RAileron";
    if(n.StartsWith("flap"))source=left?"LBFlap":"RBFlap";
@@ -140,9 +142,9 @@ public static class F5AircraftBuilder {
    if(body)source="fuselage";
    if(source==null){continue;}
    var b=BoundsOf(own.First(m=>m.name==source));
-   if(body){var old=collider.bounds;var min=b.min;var max=b.max;min.z=Mathf.Clamp(old.min.z,b.min.z,b.max.z-.05f);max.z=Mathf.Clamp(old.max.z,min.z+.05f,b.max.z);b.SetMinMax(min,max);}
+   if(body){var old=collider.bounds;var min=b.min;var max=b.max;min.x=-.45f;max.x=.45f;min.z=Mathf.Clamp(old.min.z,b.min.z,b.max.z-.05f);max.z=Mathf.Clamp(old.max.z,min.z+.05f,b.max.z);if(n=="tail")max.y=.3f;b.SetMinMax(min,max);}
    if(n.StartsWith("vstab")){var min=b.min;var max=b.max;if(n=="vstab1")max.y=b.center.y;else min.y=b.center.y;b.SetMinMax(min,max);}
-   if(n.StartsWith("wing")){var min=b.min;var max=b.max;float a=n.StartsWith("wingtip")?3.3f:n.StartsWith("wing2")?2.1f:0.7f;float end=n.StartsWith("wingtip")?4.1f:n.StartsWith("wing2")?3.3f:2.1f;min.x=left?-end:a;max.x=left?-a:end;if(n.StartsWith("wing1b"))max.z=b.center.z;else if(n.StartsWith("wing1a"))min.z=b.center.z;b.SetMinMax(min,max);}
+   if(n.StartsWith("wing")){var min=b.min;var max=b.max;float a=n.StartsWith("wingtip")?3.3f:n.StartsWith("wing2")?2.1f:1.0f;float end=n.StartsWith("wingtip")?4.1f:n.StartsWith("wing2")?3.3f:2.1f;min.x=left?-end:a;max.x=left?-a:end;min.z=Mathf.Max(min.z,-.55f);if(n.StartsWith("wing1b"))max.z=b.center.z;else if(n.StartsWith("wing1a"))min.z=b.center.z;b.SetMinMax(min,max);}
    var local=new Bounds(collider.transform.InverseTransformPoint(b.center),Vector3.zero);foreach(int x in new[]{-1,1})foreach(int y in new[]{-1,1})foreach(int z in new[]{-1,1})local.Encapsulate(collider.transform.InverseTransformPoint(b.center+Vector3.Scale(b.extents,new Vector3(x,y,z))));
    string path=R+"/Collision/"+n+".asset";var hull=AssetDatabase.LoadAssetAtPath<Mesh>(path);if(!hull){hull=new Mesh();AssetDatabase.CreateAsset(hull,path);}hull.Clear();var c=local.center;var e=Vector3.Max(local.extents,Vector3.one*.025f);
    hull.vertices=new[]{c+new Vector3(-e.x,-e.y,-e.z),c+new Vector3(e.x,-e.y,-e.z),c+new Vector3(e.x,e.y,-e.z),c+new Vector3(-e.x,e.y,-e.z),c+new Vector3(-e.x,-e.y,e.z),c+new Vector3(e.x,-e.y,e.z),c+new Vector3(e.x,e.y,e.z),c+new Vector3(-e.x,e.y,e.z)};
