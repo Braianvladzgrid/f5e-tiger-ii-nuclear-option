@@ -1,0 +1,7 @@
+{
+  "aircraft": "F-5E Tiger II",
+  "rankRequired": 2,
+  "valueMillions": 14,
+  "price": 14000000,
+  "status": "development-not-flight-tested"
+}

@@ -1,0 +1,311 @@
+newmtl f5emin_material_0
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+newmtl f5emin_material_1
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd panel.png
+newmtl f5emin_material_2
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd aces2.png
+newmtl f5emin_material_3
+Kd 0.337 0.361 0.196
+d 1.0
+illum 2
+map_Kd white-black-gradient-stripes.png
+newmtl f5emin_material_4
+Kd 0.65098 0.65098 0.65098
+d 1.0
+illum 2
+map_Kd aces2.png
+newmtl f5emin_material_5
+Kd 0.294 0.314 0.196
+d 1.0
+illum 2
+map_Kd grey-blue-flood.rgb
+newmtl f5emin_material_6
+Kd 0.478 0.502 0.31
+d 1.0
+illum 2
+map_Kd grey-blue-flood.rgb
+newmtl f5emin_material_7
+Kd 0.337 0.361 0.196
+d 1.0
+illum 2
+map_Kd grey-blue-flood.rgb
+newmtl f5emin_material_8
+Kd 0.173 0.169 0.141
+d 1.0
+illum 2
+newmtl f5emin_material_9
+Kd 0.161 0.173 0.18
+d 1.0
+illum 2
+newmtl f5emin_material_10
+Kd 0.69 0.69 0.69
+d 1.0
+illum 2
+map_Kd eject-handle.png
+newmtl f5emin_material_11
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd eject-handle.png
+newmtl f5emin_material_12
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd grey-blue-flood.rgb
+newmtl f5emin_material_13
+Kd 0.667 0.702 0.4
+d 1.0
+illum 2
+map_Kd grey-blue-flood.rgb
+newmtl f5emin_material_14
+Kd 0.6 0.447 0.2
+d 1.0
+illum 2
+newmtl f5emin_material_15
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd eject-handle.png
+newmtl f5emin_material_16
+Kd 0.8 0.8 0.8
+d 1.0
+illum 2
+map_Kd eject-handle.png
+newmtl f5emin_material_17
+Kd 0.341 0.341 0.341
+d 1.0
+illum 2
+newmtl f5emin_material_18
+Kd 0.059 0.059 0.059
+d 1.0
+illum 2
+newmtl f5emin_material_19
+Kd 0.918 0.447 0.2
+d 1.0
+illum 2
+newmtl f5emin_material_20
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+map_Kd grey-blue-flood.rgb
+newmtl f5emin_material_21
+Kd 0.431 0.455 0.384
+d 1.0
+illum 2
+newmtl f5emin_material_22
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd aces2.png
+newmtl f5emin_material_23
+Kd 0.18 0.161 0.133
+d 1.0
+illum 2
+map_Kd aces2.png
+newmtl f5emin_material_24
+Kd 0.337 0.482 0.231
+d 1.0
+illum 2
+newmtl f5emin_material_25
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+map_Kd aces2.png
+newmtl f5emin_material_26
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+newmtl f5emin_material_27
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+newmtl f5emin_material_28
+Kd 0.267 0.267 0.267
+d 1.0
+illum 2
+newmtl f5emin_material_29
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd fuselage.png
+newmtl f5emin_material_30
+Kd 1.0 1.0 1.0
+d 0.19999999999999996
+illum 2
+newmtl f5emin_material_31
+Kd 0.533333 0.533333 0.533333
+d 1.0
+illum 2
+map_Kd cockpit.png
+newmtl f5emin_material_32
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+newmtl f5emin_material_33
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+newmtl f5emin_material_34
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_35
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+map_Kd fuselage.png
+newmtl f5emin_material_36
+Kd 0.8 0.8 0.8
+d 1.0
+illum 2
+map_Kd fuselage.png
+newmtl f5emin_material_37
+Kd 0.501961 0.501961 0.501961
+d 1.0
+illum 2
+newmtl f5emin_material_38
+Kd 0.47451 0.47451 0.47451
+d 1.0
+illum 2
+newmtl f5emin_material_39
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_40
+Kd 1.0 0.0 0.0
+d 0.19999999999999996
+illum 2
+newmtl f5emin_material_41
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd nozzleinterior.png
+newmtl f5emin_material_42
+Kd 0.490196 0.411765 0.313726
+d 1.0
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_43
+Kd 1.0 0.0 0.0
+d 0.19999999999999996
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_44
+Kd 1.0 0.0 0.0
+d 1.0
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_45
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd fuselage.png
+newmtl f5emin_material_46
+Kd 0.8 0.8 0.8
+d 1.0
+illum 2
+newmtl f5emin_material_47
+Kd 0.439216 0.439216 0.0
+d 1.0
+illum 2
+newmtl f5emin_material_48
+Kd 0.219608 0.219608 0.219608
+d 1.0
+illum 2
+newmtl f5emin_material_49
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+newmtl f5emin_material_50
+Kd 0.8 0.8 0.8
+d 1.0
+illum 2
+newmtl f5emin_material_51
+Kd 0.196078 0.823529 0.196078
+d 0.19999999999999996
+illum 2
+newmtl f5emin_material_52
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_53
+Kd 0.0 1.0 0.0
+d 1.0
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_54
+Kd 0.196078 0.823529 0.196078
+d 0.19999999999999996
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_55
+Kd 0.47451 0.47451 0.47451
+d 1.0
+illum 2
+map_Kd wings.png
+newmtl f5emin_material_56
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd panel.png
+newmtl f5emin_material_57
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+newmtl f5emin_material_58
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd turbine.png
+newmtl f5emin_material_59
+Kd 0.686 0.694 1.0
+d 0.498
+illum 2
+newmtl f5emin_material_60
+Kd 0.47451 0.47451 0.47451
+d 1.0
+illum 2
+map_Kd fuselage.png
+newmtl f5emin_material_61
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd fuselage.png
+newmtl f5emin_material_62
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+map_Kd fuselage.png
+newmtl f5emin_material_63
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+newmtl f5emin_material_64
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd fuselage.png
+newmtl f5emin_material_65
+Kd 0.8 0.8 0.8
+d 1.0
+illum 2
+newmtl f5emin_material_66
+Kd 0.266667 0.266667 0.266667
+d 1.0
+illum 2
+newmtl f5emin_material_67
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+map_Kd wings.png

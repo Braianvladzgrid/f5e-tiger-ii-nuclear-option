@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 775486429, guid: 06dd3d5416bf43ea368cc39ff96e6d5a, type: 3}
+  m_Name: F5Definition
+  m_EditorClassIdentifier: 
+  typeIdentity:
+    surface: 0
+    air: 1
+    missile: 0
+    radar: 0.6
+    strategic: 0
+  roleIdentity:
+    antiSurface: 0.456
+    antiAir: 1
+    antiMissile: 0
+    antiRadar: 0.328
+  jsonKey: F5E_TigerII
+  unitName: F-5E Tiger II
+  bogeyName: 
+  description: Light fighter adaptation. Tier 2, $14 million. Native flight, weapons
+    and HUD systems; experimental flight tuning.
+  code: F-5E
+  visibleRange: 3000
+  iconRange: 100000
+  radarSize: 0.7
+  friendlyIcon: {fileID: 21300000, guid: 58d91c6cbbdae6f4e8833b34c6cf621c, type: 2}
+  hostileIcon: {fileID: 21300000, guid: 58d91c6cbbdae6f4e8833b34c6cf621c, type: 2}
+  mapIcon: {fileID: 21300000, guid: 1cbf17a8bd899c84998968441b828ddd, type: 3}
+  mapOrient: 1
+  IsObstacle: 1
+  iconSize: 1
+  mapIconSize: 1.2
+  captureCapacity: 0
+  captureStrength: 0
+  captureDefense: 0
+  length: 14.45
+  width: 8.13
+  height: 4.08
+  value: 14
+  mass: 8680
+  manpower: 1
+  armorTier: 1
+  damageTolerance: 1
+  CanSlingLoad: 0
+  unitPrefab: {fileID: 1053039148518055161, guid: 13af3efcbe8901c40996c81bfe4241dc,
+    type: 3}
+  spawnOffset: {x: 0, y: 1.55, z: -1.25}
+  disabled: 0
+  isEventContent: 0
+  dontAutomaticallyAddToEncyclopedia: 0
+  minEditorHeight: 0
+  maxEditorHeight: 10000
+  aircraftParameters: {fileID: 11400000, guid: d92a7c7c00465fa43a6e91e94d8798d6, type: 2}
+  aircraftInfo:
+    emptyWeight: 10700
+    maxSpeed: 1445
+    stallSpeed: 260
+    maneuverability: 9
+    maxWeight: 16000
+  restRotation: {x: -0.7, y: 0, z: 0}
