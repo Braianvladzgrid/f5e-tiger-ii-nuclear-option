@@ -1,26 +1,40 @@
 # F-5E development verification
 
-2026-10-18, Nuclear Option 0.34.2 / Blueprinter 2.0.1.
+Nuclear Option 0.34.2 / Blueprinter 2.0.1. Updated 2026-10-21.
 
-- Unity build and native-system reference validation: passed.
-- Aircraft catalog: F-5E Tiger II appears with its dedicated silhouette.
-- Catalog rank: 2; purchase button: $14m; purchase added one owned aircraft.
-- Bundle loaded by Blueprinter, and F-5 runtime helper loaded alongside Su-25 helper.
-- Original model conversion retained all 123 AC3D objects (17,844 triangles).
-- Bundle container inspection: no native game asset entries and no Su-25 assets.
-- Initial empty livery selector fixed with selectable liveries for both factions.
-- Fresh Fly spawn reached the cockpit but failed with immediate structural
-  damage/engine fire. This prototype is NOT flight-ready.
-- Runtime log confirms own F5 definition, 28 physics parts and 17 gear-animation
-  tracks bound to three owned native gears.
-- Contact logging identified stationary self-collisions: reversed control-surface
-  sides, oversized body boxes and obsolete donor bay/fairing colliders.
-- Builder correction in progress: positive Unity model scale, narrower body/wing
-  collision partitions, removal of unused donor bay/fairing contacts. Repeat
-  fresh-spawn verification is required after compilation.
-- Source/native gear visual alignment and cockpit visibility need in-game checking.
-- Taxi, takeoff, all camera modes, weapons and landing: not validated yet.
+Verified in game on 2026-10-18:
+- Dedicated catalog silhouette, tier 2 and $14m purchase.
+- Fresh build-8 spawn without structural damage after correcting mirrored
+  control surfaces and separating body/wing collision volumes.
+- All 28 physics parts remained at 100 health during the second flight test.
+- Three native landing gears bound to 17 source animation tracks.
+- Native takeoff and approximately two minutes of sustained flight; final
+  telemetry about 465 m MSL and 206 m/s, without structural damage.
+- Gear-up command hid the source wheels; camera cycling caused no recorded damage.
 
-Unrelated installed mods also emit startup warnings (NOAutopilot map-zoom patch
-and NuclearOptionsGroundForces missing MelonLoader). These are separate from
-the F-5 verification; no unrelated mods were changed.
+Test limits:
+- A temporary local control probe positioned the aircraft on the runway and
+  drove normal control inputs. It applied no extra forces or damage protection.
+- The first flight climbed 100 m, then crashed after the probe neutralized pitch.
+  The second flight used continued attitude control and remained healthy.
+- Human controller handling, weapons firing and landing have not been verified.
+- Gear doors/alignment and cockpit visibility still need visual verification.
+- Flight balance is provisional; one native controller represents both engines.
+
+2026-10-21 build 9:
+- Successfully compiled and installed with a fixed cockpit camera attached to
+  the cockpit part instead of the animated pilot head.
+- SHA-256: 280d7ee5ffa9da096409b0a67bee4b5b5f40feb8d6bcfbe1220894f6bc262cc4
+- Temporary flight-control probe removed from the game installation.
+- Fresh in-game cockpit/HUD verification pending.
+
+Evidence: work/f5/test-telemetry-flight1.txt and test-telemetry-flight2.txt
+in the development workspace. Test tools are excluded from the release archive.
+
+Unrelated installed mods emit their own warnings; no unrelated mods were changed.
+
+Build-9 runtime attempt: bundle loaded successfully, but before a fresh F-5
+spawn the game stopped responding and Player.log recorded D3D11 render-texture
+creation failures 0x887a0005. Window-capture recovery also failed with the same
+GPU-device error. This attempt does not validate the new camera or HUD.
+

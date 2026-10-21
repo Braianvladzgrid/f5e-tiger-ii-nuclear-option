@@ -61,8 +61,12 @@ public static class F5AircraftBuilder {
     ConvertMaterials(mf);
    }
    // Keep functional native instruments; move the camera and displays together to the F-5 eye station.
-   var eye=Ref(aircraft,"cockpitViewPoint");var eyeTarget=root.transform.TransformPoint(new Vector3(0,.98f,3.92f));
-   var eyeDelta=eyeTarget-eye.position;eye.position=eyeTarget;nativeCockpit.position+=eyeDelta;
+   var donorEye=Ref(aircraft,"cockpitViewPoint");var eyeTarget=root.transform.TransformPoint(new Vector3(0,1.03f,3.55f));
+   var eyeDelta=eyeTarget-donorEye.position;nativeCockpit.position+=eyeDelta;
+   // A camera offset on the animated helmet bone swings around when the pilot
+   // looks aside. Give the F-5 its own fixed viewpoint on the cockpit body.
+   var eye=new GameObject("F5PilotViewPoint").transform;eye.SetParent(T(root,"cockpit"),true);eye.position=eyeTarget;eye.rotation=root.transform.rotation;
+   aircraft.FindProperty("cockpitViewPoint").objectReferenceValue=eye;
    aircraft.FindProperty("definition").objectReferenceValue=def;
    Renderers(aircraft,"exteriorRenderers",own.Where(m=>!Interior(m.name)).Select(m=>m.GetComponent<Renderer>()));
    Renderers(aircraft,"cockpitRenderers",originalCockpit.Concat(cockpit.GetComponentsInChildren<Renderer>(true)));aircraft.ApplyModifiedPropertiesWithoutUndo();

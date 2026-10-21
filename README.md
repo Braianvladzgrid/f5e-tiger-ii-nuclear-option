@@ -1,7 +1,7 @@
 # F-5E Tiger II for Nuclear Option
 
 Development prototype: tier 2, $14,000,000. Blueprinter 2.0.1, Nuclear Option
-0.34.2 and Unity 2022.3.62f2. This project is not yet flight-validated.
+0.34.2 and Unity 2022.3.62f2. Native takeoff and a short sustained flight have been tested; full validation is pending. See TESTING.md.
 
 Exterior and cockpit use the FlightGear F-5E by Prestes Hangar / Dave Culp /
 FGUK / Zexe. Model license: CC BY-NC-SA 3.0. This adaptation is free and
@@ -34,3 +34,4 @@ Restart Nuclear Option and spawn a new aircraft after each update.
 Do not publish a stable release until fresh-spawn, taxi, braking, takeoff,
 pitch/roll/yaw, all cameras, weapons, gear retraction/doors, landing and logs
 have been checked inside the game.
+
