@@ -3,5 +3,5 @@
   "rankRequired": 2,
   "valueMillions": 14,
   "price": 14000000,
-  "status": "development-not-flight-tested"
+  "status": "development-native-takeoff-tested-full-validation-pending"
 }

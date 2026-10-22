@@ -38,3 +38,26 @@ spawn the game stopped responding and Player.log recorded D3D11 render-texture
 creation failures 0x887a0005. Window-capture recovery also failed with the same
 GPU-device error. This attempt does not validate the new camera or HUD.
 
+
+Fresh build-9 spawn after PC restart, 2026-10-21:
+- Mission and F-5 spawn completed without the prior GPU error.
+- Tier 2 / $14m and dedicated icon confirmed again.
+- HUD rendered; cockpit and exterior/flyby modes displayed.
+- Aircraft responded to throttle and moved out of the hangar; throttle and
+  airbrake were active on entry, so this is not a controlled taxi/brake test.
+- Cockpit still showed empty source instrument apertures. Editor inspection
+  found targetScreen at z=7.74 m while the source panel is around z=4.35 m.
+- Build 10 moves that native screen to the source panel, preserves the exhaust
+  disk in exterior rendering, and matches inner canopy copies to source scale.
+  Compilation and fresh-spawn verification of build 10 are pending.
+
+Build 10 result, 2026-10-21:
+- Unity compilation and installation passed.
+- SHA-256: f2ea7008b7002a3ffa88ea654f867832a09253e9227bfe9385afc6bf9b626583
+- Fresh spawn passed; HUD and repositioned tactical display rendered in game.
+  Radar sweep, weapon status and aircraft information were visible on the panel.
+- No F-5 collision/damage failure appeared in this short stationary/ground check.
+- Gear initialization again reported 17 tracks, 9 visual assemblies and 3 gears.
+- The source panel still has decorative white details overlapping the display;
+  visual polish is pending. Weapon firing and landing remain untested.
+- Aircraft was left paused because the current throttle input was active.

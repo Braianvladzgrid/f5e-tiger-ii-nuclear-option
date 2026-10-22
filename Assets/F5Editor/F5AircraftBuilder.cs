@@ -18,7 +18,7 @@ public static class F5AircraftBuilder {
  static void Set(SerializedObject so,string n,float v){so.FindProperty(n).floatValue=v;}
  static void Renderers(SerializedObject so,string field,IEnumerable<Renderer> rs){var p=so.FindProperty(field);var a=rs.Where(r=>r).Distinct().ToArray();p.arraySize=a.Length;for(int i=0;i<a.Length;i++)p.GetArrayElementAtIndex(i).objectReferenceValue=a[i];}
  static Bounds BoundsOf(MeshFilter mf){var b=mf.sharedMesh.bounds;var result=new Bounds(mf.transform.TransformPoint(b.center),Vector3.zero);foreach(int x in new[]{-1,1})foreach(int y in new[]{-1,1})foreach(int z in new[]{-1,1})result.Encapsulate(mf.transform.TransformPoint(b.center+Vector3.Scale(b.extents,new Vector3(x,y,z))));return result;}
- static bool Interior(string n)=>n=="Panel"||n=="Panel_0"||n=="Panel_1"||n=="Cockpit"||n=="Dash"||n=="seat"||n=="CPT-Seat"||n.Contains("cushion")||n.StartsWith("disk")||n.StartsWith("block")||n.StartsWith("rect")||n.StartsWith("poly")||n.StartsWith("object")||n.StartsWith("cylinder")||n.Contains("handle")||n.Contains("oxy")||n.Contains("safety");
+ static bool Interior(string n)=>n=="Panel"||n=="Panel_0"||n=="Panel_1"||n=="Cockpit"||n=="Dash"||n=="seat"||n=="CPT-Seat"||n.Contains("cushion")||(n.StartsWith("disk")&&n!="disk")||n.StartsWith("block")||n.StartsWith("rect")||n.StartsWith("poly")||n.StartsWith("object")||n.StartsWith("cylinder")||n.Contains("handle")||n.Contains("oxy")||n.Contains("safety");
  static bool Gear(string n)=>n.Contains("Gear")||n.Contains("Tire")||n.Contains("doorgear");
 
  [MenuItem("F5/Rebuild and Compile")]
@@ -63,6 +63,11 @@ public static class F5AircraftBuilder {
    // Keep functional native instruments; move the camera and displays together to the F-5 eye station.
    var donorEye=Ref(aircraft,"cockpitViewPoint");var eyeTarget=root.transform.TransformPoint(new Vector3(0,1.03f,3.55f));
    var eyeDelta=eyeTarget-donorEye.position;nativeCockpit.position+=eyeDelta;
+   // The native tactical screen is a sibling, not a child of cockpit_interior.
+   // Fit its visible mesh to the F-5 instrument panel instead of leaving it at the donor nose station.
+   var tactical=T(root,"targetScreen").GetComponent<Renderer>();
+   tactical.transform.localScale*=.9f;
+   tactical.transform.position+=root.transform.TransformPoint(new Vector3(0,.63f,4.18f))-tactical.bounds.center;
    // A camera offset on the animated helmet bone swings around when the pilot
    // looks aside. Give the F-5 its own fixed viewpoint on the cockpit body.
    var eye=new GameObject("F5PilotViewPoint").transform;eye.SetParent(T(root,"cockpit"),true);eye.position=eyeTarget;eye.rotation=root.transform.rotation;
@@ -71,7 +76,7 @@ public static class F5AircraftBuilder {
    Renderers(aircraft,"exteriorRenderers",own.Where(m=>!Interior(m.name)).Select(m=>m.GetComponent<Renderer>()));
    Renderers(aircraft,"cockpitRenderers",originalCockpit.Concat(cockpit.GetComponentsInChildren<Renderer>(true)));aircraft.ApplyModifiedPropertiesWithoutUndo();
    foreach(var name in new[]{"Windscreen","WindscreenFrame","CanopyGlass","CanopyFrame"}) {
-    var source=own.FirstOrDefault(m=>m.name==name);if(!source)continue;var copy=Object.Instantiate(source.gameObject,cockpit.transform);copy.name=name+"_Interior";copy.transform.position=source.transform.position;copy.transform.rotation=source.transform.rotation;copy.layer=nativeCockpit.gameObject.layer;
+    var source=own.FirstOrDefault(m=>m.name==name);if(!source)continue;var copy=Object.Instantiate(source.gameObject,cockpit.transform);copy.name=name+"_Interior";copy.transform.position=source.transform.position;copy.transform.rotation=source.transform.rotation;copy.transform.localScale=source.transform.lossyScale;copy.layer=nativeCockpit.gameObject.layer;
    }
    aircraft.Update();Renderers(aircraft,"cockpitRenderers",originalCockpit.Concat(cockpit.GetComponentsInChildren<Renderer>(true)));aircraft.ApplyModifiedPropertiesWithoutUndo();
    FitGear(root,own);FitSurfaces(root,own);FitHull(root,own);ConfigureEngine(root,own);ConfigureWeapons(root,parameters);
@@ -212,3 +217,4 @@ public static class F5AircraftBuilder {
  }
  public static void BuildAndPreview(){Build();F5PreviewRender.Capture();}
 }
+

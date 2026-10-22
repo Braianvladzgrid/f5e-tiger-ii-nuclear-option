@@ -51,7 +51,7 @@ MonoBehaviour:
   armorTier: 1
   damageTolerance: 1
   CanSlingLoad: 0
-  unitPrefab: {fileID: 6419285947741594743, guid: 13af3efcbe8901c40996c81bfe4241dc,
+  unitPrefab: {fileID: 7795856173987322816, guid: 13af3efcbe8901c40996c81bfe4241dc,
     type: 3}
   spawnOffset: {x: 0, y: 1.55, z: -1.25}
   disabled: 0
