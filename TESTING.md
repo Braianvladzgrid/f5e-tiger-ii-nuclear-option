@@ -61,3 +61,29 @@ Build 10 result, 2026-10-21:
 - The source panel still has decorative white details overlapping the display;
   visual polish is pending. Weapon firing and landing remain untested.
 - Aircraft was left paused because the current throttle input was active.
+
+2026-10-21 instrument and integration work (builds 11-12):
+- Added native-value instruments: airspeed, MSL altitude, pitch/bank, fuel mass,
+  engine RPM ratio, native gear state and actual control brake input.
+- Added supplementary cockpit HUD text for TAS, vertical speed, derived angle
+  of attack and remaining fuel mass. These read simulation values only.
+- Replaced disconnected source blanks/knobs; moved the tactical screen below
+  the primary instruments. Instrument sizes were iterated after real screenshots.
+- Build 11: 202 telemetry samples, max 204.4461 m/s and 462.3613 m MSL,
+  minimum recorded part health 100; gear retraction/extension and camera cycling.
+- Landing trial 1 reached three-wheel contact but did not record a rollout stop.
+- Landing trial 2 crashed after the test controller latched stale gear-contact
+  state immediately after placement. This is a FAILED fixture run, not a pass.
+- Initial gun fixture changed synchronization state without firing; ammo remained
+  unchanged. Revised fixture uses native WeaponManager.FireGuns instead.
+- Build 12 bundle compiled and installed; SHA-256:
+  ebbba5c3490bcbba332c764002e242787318516ad5cb99b104592f17fcdfeccf.
+  Fresh screen-size and revised weapon/landing checks are pending.
+
+Checkpoint: user shutting down PC, 2026-10-21.
+Build 12 and revised instrument DLL are installed. The game had loaded the
+Free Flight scenario, but the final fresh F-5 spawn was not reached.
+Final gauge sizing, revised contact-delay landing fixture and native FireGuns
+fixture therefore remain unverified. Resume there; do not claim completion.
+Latest runtime DLL SHA-256:
+DA03BB62F16BD4E827233FA45159C32CB1739449D4DC1648AB4DF86B7C0AD759

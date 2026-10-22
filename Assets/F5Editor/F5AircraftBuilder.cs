@@ -59,6 +59,8 @@ public static class F5AircraftBuilder {
     if(mf.name=="Pilot"||mf.name.StartsWith("LR-arm")||mf.name=="tailhook"||mf.name.StartsWith("revoprobe")){mf.gameObject.SetActive(false);continue;}
     if(Interior(mf.name)){mf.transform.SetParent(cockpit.transform,true);mf.gameObject.layer=nativeCockpit.gameObject.layer;}
     ConvertMaterials(mf);
+    // Live gauges replace the unconnected source indicator blanks and knobs.
+    if(Interior(mf.name)&&BoundsOf(mf).center.z>4.30f&&(mf.name=="Panel_0"||mf.name.StartsWith("block")||mf.name.StartsWith("disk")||mf.name=="poly"))mf.gameObject.SetActive(false);
    }
    // Keep functional native instruments; move the camera and displays together to the F-5 eye station.
    var donorEye=Ref(aircraft,"cockpitViewPoint");var eyeTarget=root.transform.TransformPoint(new Vector3(0,1.03f,3.55f));
@@ -67,7 +69,7 @@ public static class F5AircraftBuilder {
    // Fit its visible mesh to the F-5 instrument panel instead of leaving it at the donor nose station.
    var tactical=T(root,"targetScreen").GetComponent<Renderer>();
    tactical.transform.localScale*=.9f;
-   tactical.transform.position+=root.transform.TransformPoint(new Vector3(0,.63f,4.18f))-tactical.bounds.center;
+   tactical.transform.position+=root.transform.TransformPoint(new Vector3(0,.54f,4.18f))-tactical.bounds.center;
    // A camera offset on the animated helmet bone swings around when the pilot
    // looks aside. Give the F-5 its own fixed viewpoint on the cockpit body.
    var eye=new GameObject("F5PilotViewPoint").transform;eye.SetParent(T(root,"cockpit"),true);eye.position=eyeTarget;eye.rotation=root.transform.rotation;
@@ -98,6 +100,7 @@ public static class F5AircraftBuilder {
    var source=materials[i];if(!source)continue;var path=R+"/F5_"+source.name.Replace('/','_')+(mf.name.Contains("Glass")||mf.name=="Windscreen"?"_glass":"")+".mat";
    var mat=AssetDatabase.LoadAssetAtPath<Material>(path);if(!mat){mat=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(mat,path);}
    var color=source.HasProperty("_Color")?source.GetColor("_Color"):Color.white;
+   if(source.name=="f5emin_material_0")color=new Color(.07f,.08f,.09f,color.a);
    mat.SetColor("_BaseColor",color);mat.SetFloat("_Smoothness",.25f);if(source.mainTexture)mat.SetTexture("_BaseMap",source.mainTexture);
    if(color.a<.95f||mf.name.Contains("Glass")||mf.name=="Windscreen") {
     color.a=Mathf.Min(color.a,.08f);mat.SetColor("_BaseColor",color);mat.SetFloat("_Surface",1);mat.SetFloat("_ZWrite",0);mat.SetFloat("_SrcBlend",5);mat.SetFloat("_DstBlend",10);mat.SetFloat("_Cull",0);mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");mat.renderQueue=3000;mat.SetShaderPassEnabled("ShadowCaster",false);
@@ -217,4 +220,6 @@ public static class F5AircraftBuilder {
  }
  public static void BuildAndPreview(){Build();F5PreviewRender.Capture();}
 }
+
+
 

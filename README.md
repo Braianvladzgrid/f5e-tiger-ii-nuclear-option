@@ -13,7 +13,7 @@ The first integration uses native FS-12 flight, damage, cockpit displays and
 weapon systems. Native pitch surfaces are moved aft and reversed for the F-5
 stabilators; thrust vectoring is disabled. One engine controller currently
 represents the engine pair, with two nozzle effects. This is an adaptation,
-not an authentic F-5 systems simulation. Analog source instruments are decorative.
+not an authentic F-5 systems simulation. The source instruments are supplemented with live native-value gauges and a cockpit HUD data block. This does not reproduce authentic F-5 avionics.
 
 The model has its own silhouette icon, source landing-gear folding tracks,
 three native wheel-contact assemblies, and wing-mounted external stations.
@@ -34,4 +34,5 @@ Restart Nuclear Option and spawn a new aircraft after each update.
 Do not publish a stable release until fresh-spawn, taxi, braking, takeoff,
 pitch/roll/yaw, all cameras, weapons, gear retraction/doors, landing and logs
 have been checked inside the game.
+
 

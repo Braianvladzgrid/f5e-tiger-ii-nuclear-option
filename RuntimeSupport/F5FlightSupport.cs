@@ -33,6 +33,8 @@ public sealed class F5FlightFix : BaseUnityPlugin
         foreach(var plane in UnityEngine.Object.FindObjectsOfType<Aircraft>(true)) {
             if(!IsF5(plane)||plane.partLookup==null)continue;
             SourceGearVisuals(plane);
+            Aircraft localPlane;
+            if(GameManager.GetLocalAircraft(out localPlane)&&localPlane==plane&&!plane.GetComponent<F5CockpitInstruments>())plane.gameObject.AddComponent<F5CockpitInstruments>();
             var roots=plane.partLookup.OfType<AeroPart>().Select(p=>p.transform).Concat(new[]{plane.transform}).Distinct();
             foreach(var root in roots) {
                 foreach(var mesh in root.GetComponentsInChildren<MeshFilter>(true)) {
@@ -211,4 +213,6 @@ public sealed class F5GearAnimation : MonoBehaviour
         }
     }
 }
+
+
 
