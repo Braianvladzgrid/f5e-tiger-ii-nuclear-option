@@ -54,7 +54,7 @@ public sealed class F5CockpitInstruments : MonoBehaviour {
   var jet=FindObjectsOfType<Turbojet>().FirstOrDefault(e=>(Aircraft)AccessTools.Field(typeof(Turbojet),"aircraft").GetValue(e)==aircraft);
   string rpm=jet?(jet.GetRPMRatio()*100).ToString("0"):"--";
   systems.text="FUEL "+aircraft.GetFuelQuantity().ToString("0")+" KG   RPM "+rpm+"%\nGEAR "+aircraft.gearState+"   BRAKE "+(input.brake*100).ToString("0")+"%";
-  var localAir=aircraft.transform.InverseTransformDirection(air);float aoa=Mathf.Atan2(-localAir.y,localAir.z)*Mathf.Rad2Deg;float vvi=rb.velocity.y;hud.text="F-5E\nTAS "+speed.ToString("0")+" KM/H\nV/S "+vvi.ToString("+0.0;-0.0;0.0")+" M/S\nAOA "+aoa.ToString("0.0")+" DEG\nFUEL "+aircraft.GetFuelQuantity().ToString("0")+" KG";
+  var localAir=aircraft.transform.InverseTransformDirection(air);float aoa=Mathf.Atan2(-localAir.y,localAir.z)*Mathf.Rad2Deg;float vvi=rb.velocity.y;hud.text="F-5E\nTAS "+speed.ToString("0")+" KM/H\nV/S "+vvi.ToString("+0.0;-0.0;0.0")+" M/S\nAOA "+(air.sqrMagnitude>=100f?aoa.ToString("0.0"):"--")+" DEG\nFUEL "+aircraft.GetFuelQuantity().ToString("0")+" KG";
  }
  void OnDestroy(){if(panel)Destroy(panel.gameObject);if(ink)Destroy(ink);if(face)Destroy(face);}
 }

@@ -87,3 +87,33 @@ Final gauge sizing, revised contact-delay landing fixture and native FireGuns
 fixture therefore remain unverified. Resume there; do not claim completion.
 Latest runtime DLL SHA-256:
 DA03BB62F16BD4E827233FA45159C32CB1739449D4DC1648AB4DF86B7C0AD759
+
+2026-10-22 visual refinement, build 15:
+- Added paired segmented nozzle rims and recessed turbine/interior geometry.
+- Separated exhaust steel, canopy-frame and tire materials from shared body paint.
+- Recalculated source normals with a 65-degree smoothing angle.
+- Updated canopy tint/reflection and body material response.
+- Aligned rendered exhaust effects with the model's openings; native nozzle force
+  transforms, thrust values and aircraft mass parameters were not changed.
+- Collision assets have no changes relative to the previous committed version.
+- Unity build and close-up render passed. Bundle SHA-256:
+  6b38a21ddf8e182a9f5e483180dee585a7c2c24ce22196d2d13d99fd2ef31d4a.
+- Fresh in-game spawn and screenshot review pending at this checkpoint.
+
+2026-10-22 build 15 runtime verification:
+- Fresh hangar and player spawn show the segmented twin nozzles, darker exhaust
+  collars and revised body/canopy materials. Tier 2 / $14m confirmed in hangar.
+- Live cockpit gauges and supplementary HUD initialized without F5 exceptions.
+  Primary dials are visible; the low panel still needs further layout/detail work.
+- Native-force takeoff fixture climbed 100 m, then sustained flight at roughly
+  195 m/s / 442 m MSL with all 28 recorded parts at 100 health. Gear-up completed.
+- Revised FireGuns fixture did not consume ammo (1 -> 1): weapons are NOT validated.
+- Revised approach fixture stopped on three wheel contacts, but tail health fell
+  to 77.35938 following a terrain2_roads91 collision. This is NOT a clean landing
+  pass; approach/controller and tail clearance need investigation.
+- Evidence retained in work/f5/test-telemetry-build15.txt and Player-build15.log.
+- Supplementary AOA now displays -- below 10 m/s airspeed, avoiding meaningless
+  stationary readings. Compiled successfully; this last small runtime change has
+  not had a new in-game spawn yet. Runtime SHA-256:
+  de5c9b373ef00c787890a63ad85f39d5f8ad025535988ed438d63153ba33f765.
+- Temporary F5TestProbe.dll removed from the game addon after testing; only the production runtime DLL remains.

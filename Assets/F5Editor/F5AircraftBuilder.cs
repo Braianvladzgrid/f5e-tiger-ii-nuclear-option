@@ -50,7 +50,7 @@ public static class F5AircraftBuilder {
    }
    foreach(var skin in root.GetComponentsInChildren<SkinnedMeshRenderer>(true))skin.sharedMesh=null;
    var importer=(ModelImporter)AssetImporter.GetAtPath(R+"/Models/f5emin.obj");
-   if(importer.globalScale!=1 || !importer.isReadable){importer.globalScale=1;importer.isReadable=true;importer.SaveAndReimport();}
+   if(importer.globalScale!=1 || !importer.isReadable || importer.normalSmoothingAngle!=65 || importer.importNormals!=ModelImporterNormals.Calculate){importer.globalScale=1;importer.isReadable=true;importer.importNormals=ModelImporterNormals.Calculate;importer.normalSmoothingAngle=65;importer.SaveAndReimport();}
    var model=Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(R+"/Models/f5emin.obj"),root.transform);model.name="F5Exterior";model.transform.localPosition=Offset;model.transform.localScale=Vector3.one*.973f;
    var own=model.GetComponentsInChildren<MeshFilter>(true).Where(m=>m.sharedMesh).ToArray();
    var cockpit=new GameObject("F5Cockpit");cockpit.transform.SetParent(root.transform,false);
@@ -82,6 +82,7 @@ public static class F5AircraftBuilder {
    }
    aircraft.Update();Renderers(aircraft,"cockpitRenderers",originalCockpit.Concat(cockpit.GetComponentsInChildren<Renderer>(true)));aircraft.ApplyModifiedPropertiesWithoutUndo();
    FitGear(root,own);FitSurfaces(root,own);FitHull(root,own);ConfigureEngine(root,own);ConfigureWeapons(root,parameters);
+   var detailRenderers=F5VisualPolish.Apply(root);aircraft.Update();Renderers(aircraft,"exteriorRenderers",own.Where(m=>!Interior(m.name)).Select(m=>m.GetComponent<Renderer>()).Concat(detailRenderers));aircraft.ApplyModifiedPropertiesWithoutUndo();
    foreach(var part in root.GetComponentsInChildren<Component>(true).Where(c=>c&&c.GetType().Name=="AeroPart")) {
     var so=new SerializedObject(part);var mass=so.FindProperty("mass");if(mass!=null)mass.floatValue*=.72f;so.ApplyModifiedPropertiesWithoutUndo();
    }
@@ -97,14 +98,15 @@ public static class F5AircraftBuilder {
   var mr=mf.GetComponent<MeshRenderer>();if(!mr)return;
   var materials=mr.sharedMaterials;
   for(int i=0;i<materials.Length;i++) {
-   var source=materials[i];if(!source)continue;var path=R+"/F5_"+source.name.Replace('/','_')+(mf.name.Contains("Glass")||mf.name=="Windscreen"?"_glass":"")+".mat";
+   var source=materials[i];if(!source)continue;bool exhaust=mf.name=="Nozzles"||mf.name=="NozzleNeck"||mf.name=="disk";bool frame=mf.name.Contains("Frame");bool rubber=mf.name.Contains("Tire");string role=exhaust?"_exhaust":frame?"_frame":rubber?"_rubber":"";var path=R+"/F5_"+source.name.Replace('/','_')+role+(mf.name.Contains("Glass")||mf.name=="Windscreen"?"_glass":"")+".mat";
    var mat=AssetDatabase.LoadAssetAtPath<Material>(path);if(!mat){mat=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(mat,path);}
    var color=source.HasProperty("_Color")?source.GetColor("_Color"):Color.white;
    if(source.name=="f5emin_material_0")color=new Color(.07f,.08f,.09f,color.a);
    mat.SetColor("_BaseColor",color);mat.SetFloat("_Smoothness",.25f);if(source.mainTexture)mat.SetTexture("_BaseMap",source.mainTexture);
    if(color.a<.95f||mf.name.Contains("Glass")||mf.name=="Windscreen") {
-    color.a=Mathf.Min(color.a,.08f);mat.SetColor("_BaseColor",color);mat.SetFloat("_Surface",1);mat.SetFloat("_ZWrite",0);mat.SetFloat("_SrcBlend",5);mat.SetFloat("_DstBlend",10);mat.SetFloat("_Cull",0);mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");mat.renderQueue=3000;mat.SetShaderPassEnabled("ShadowCaster",false);
+    color=new Color(.63f,.76f,.82f,Mathf.Min(color.a,.10f));mat.SetFloat("_Smoothness",.8f);mat.SetColor("_BaseColor",color);mat.SetFloat("_Surface",1);mat.SetFloat("_ZWrite",0);mat.SetFloat("_SrcBlend",5);mat.SetFloat("_DstBlend",10);mat.SetFloat("_Cull",0);mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");mat.renderQueue=3000;mat.SetShaderPassEnabled("ShadowCaster",false);
    }
+   if(exhaust){mat.SetColor("_BaseColor",new Color(.16f,.17f,.18f));mat.SetTexture("_BaseMap",null);mat.SetFloat("_Metallic",.8f);mat.SetFloat("_Smoothness",.36f);}else if(frame){mat.SetColor("_BaseColor",new Color(.045f,.055f,.06f));mat.SetFloat("_Metallic",.3f);mat.SetFloat("_Smoothness",.35f);}else if(rubber){mat.SetColor("_BaseColor",new Color(.035f,.038f,.04f));mat.SetFloat("_Metallic",0);mat.SetFloat("_Smoothness",.1f);}else if(mf.name=="fuselage"||mf.name.Contains("Wing")){mat.SetFloat("_Metallic",.35f);mat.SetFloat("_Smoothness",.42f);}
    materials[i]=mat;EditorUtility.SetDirty(mat);
   }mr.sharedMaterials=materials;
  }
@@ -168,6 +170,7 @@ public static class F5AircraftBuilder {
   // One native engine controller represents the pair for the initial integration; two exhaust effects.
   var nozzle=C(root,"JetNozzle");var clone=Object.Instantiate(nozzle.gameObject,nozzle.transform.parent);clone.name="F5Nozzle_R";nozzle.name="F5Nozzle_L";
   nozzle.transform.position=root.transform.TransformPoint(new Vector3(-.32f,.02f,-4.9f));clone.transform.position=root.transform.TransformPoint(new Vector3(.32f,.02f,-4.9f));
+  for(int side=0;side<2;side++){var effectRoot=side==0?nozzle.transform:clone.transform;var target=root.transform.TransformPoint(new Vector3(side==0?-.27f:.27f,.185f,-5.135f));var delta=target-effectRoot.position;foreach(Transform child in effectRoot)if(child.GetComponentsInChildren<Renderer>(true).Length>0||child.GetComponentsInChildren<ParticleSystem>(true).Length>0)child.position+=delta;}
   foreach(var n in new[]{nozzle.gameObject,clone})foreach(var tr in n.GetComponentsInChildren<Transform>(true).Where(t=>t.name.IndexOf("afterburn",StringComparison.OrdinalIgnoreCase)>=0))tr.localScale*=.45f;
   jet.Update();var nozzles=jet.FindProperty("nozzles");nozzles.arraySize=2;nozzles.GetArrayElementAtIndex(0).objectReferenceValue=nozzle;nozzles.GetArrayElementAtIndex(1).objectReferenceValue=C(clone,"JetNozzle");jet.ApplyModifiedPropertiesWithoutUndo();
  }
@@ -220,6 +223,8 @@ public static class F5AircraftBuilder {
  }
  public static void BuildAndPreview(){Build();F5PreviewRender.Capture();}
 }
+
+
 
 
 
