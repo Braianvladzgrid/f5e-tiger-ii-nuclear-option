@@ -142,3 +142,25 @@ DA03BB62F16BD4E827233FA45159C32CB1739449D4DC1648AB4DF86B7C0AD759
 - Installed both files. Fresh in-game cockpit/loadout review is still pending.
 - Temporary F5TestProbe is installed for this session and must be removed after
   integration checks, before normal use. Landing/firing remain unvalidated.
+
+2026-10-22 build 19 correction after loaded-flight review:
+- Build 18 compact cockpit and revised five loadout groups verified in game.
+  Configured 3 GPO-500 + 2 MMR-S3 + 2 IRM-S2, totaling seven stores.
+- Build 18 takeoff succeeded but bombs struck the ground during placement/settling,
+  damaging fuselage/inner-wing parts. This is a FAILED ground-clearance result.
+- Raised underwing mounts to y=-0.15, centerline to y=-0.35; shortened visual
+  pylons. Removed 500 kg bombs from centerline options; 125/250 kg remain.
+- Build 19 compiled and passed the surface-deflection mesh audit again.
+- Native gun firing with gear retracted verified in build 18: 750 -> 392 rounds
+  in the three-second fixture, safety=False. Evidence: work/f5/test-telemetry-
+  build18-ground-clearance-fail.txt. This does not validate every external weapon.
+- Expanded native HUD pylon-index coverage to include centerline/cannon indices,
+  fixing the PylonIndicator.UpdateImages IndexOutOfRangeException seen in build 18.
+  Added a compact per-station store-count row on the F-5 instrument panel.
+- Installed build 19 bundle SHA-256:
+  4e5c448ad1086d24a68683bd767a4d26dabc952e4555081912e07b215451a676
+  Runtime SHA-256:
+  f4ec2f5b7c5b2f763cb0e2cc22aa7c3ebe3bdb2402891ae6981f44dc55308f85
+- Final fresh-spawn ground-clearance/HUD checks are pending at this checkpoint.
+- Probe DLL moved out of the game directory after this test process loaded it.
+  It remains active only in the current game process; next launch is normal.

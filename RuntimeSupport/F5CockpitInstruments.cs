@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
@@ -12,6 +13,7 @@ public sealed class F5CockpitInstruments : MonoBehaviour {
  readonly List<Mesh> meshes=new List<Mesh>();
  Material ink,green,face; TextMesh attitudeText,systems,hudLeft,hudRight,caution;
  TextMesh gearLamp,brakeLamp,fuelLamp,engineLamp;
+ WeaponManager manager;
  Dial speed,altitude,vertical,fuel,rpm; LineRenderer horizon,velocityMarker;
  static readonly Color Green=new Color(.25f,1,.35f),Amber=new Color(1,.65f,.16f);
  sealed class Dial {public Transform needle;public TextMesh value;public float maximum;}
@@ -58,8 +60,15 @@ public sealed class F5CockpitInstruments : MonoBehaviour {
   foreach(var child in Enumerable.Range(0,panel.childCount).Select(panel.GetChild).Where(t=>t!=cluster&&!t.name.StartsWith("HUD")&&t.name!="Air velocity cue").ToArray())child.SetParent(cluster,false);
   cluster.localScale=Vector3.one*.72f;cluster.localPosition=new Vector3(0,.79f,4.24f)*.28f+new Vector3(0,-.035f,.13f);
   var f=AccessTools.Field(typeof(Aircraft),"cockpitRenderers");f.SetValue(aircraft,((Renderer[])f.GetValue(aircraft)).Concat(renderers).ToArray());
+  manager=AccessTools.Field(typeof(Aircraft),"weaponManager").GetValue(aircraft) as WeaponManager;
   jet=FindObjectsOfType<Turbojet>().FirstOrDefault(e=>(Aircraft)AccessTools.Field(typeof(Turbojet),"aircraft").GetValue(e)==aircraft);
   Debug.Log("[F5Instruments] Detailed panel initialized: 5 live dials, attitude horizon, 4 annunciators, velocity cue and HUD telemetry");
+ }
+ string Stores(){
+  var lookup=manager?AccessTools.Field(typeof(WeaponManager),"HardpointsIndexes").GetValue(manager) as IDictionary:null;
+  if(lookup==null)return "STORES --";int[] map={4,2,0,6,1,3,5};var values=new List<string>();
+  for(int i=0;i<map.Length;i++){int ammo=0;var mounts=lookup[map[i]] as IEnumerable;if(mounts!=null)foreach(var mount in mounts)ammo+=Convert.ToInt32(AccessTools.Field(mount.GetType(),"ammo").GetValue(mount));values.Add((i+1)+":"+ammo);}
+  return "STORES "+string.Join(" ",values.ToArray());
  }
  void LateUpdate(){
   if(!aircraft||!panel||Time.unscaledTime<next)return;next=Time.unscaledTime+.05f;var rb=aircraft.CockpitRB();if(!rb)return;
@@ -68,7 +77,7 @@ public sealed class F5CockpitInstruments : MonoBehaviour {
   Read(speed,tas/1.852f,"000");Read(altitude,alt*3.28084f,"00000");Read(vertical,vvi+50);vertical.value.text=vvi.ToString("+0.0;-0.0;0.0");Read(fuel,f,"0000");Read(rpm,power,"000");
   float displacement=Mathf.Clamp(-pitch*.0015f,-.038f,.038f);float half=Mathf.Sqrt(.04f*.04f-displacement*displacement);var q=Quaternion.Euler(0,0,-bank);var hc=new Vector3(0,.866f,4.23f);horizon.SetPositions(new[]{hc+q*new Vector3(-half,displacement,0),hc+q*new Vector3(half,displacement,0)});attitudeText.text="P "+pitch.ToString("+0;-0;0")+"  B "+bank.ToString("+0;-0;0");
   bool gearDown=aircraft.gearState==LandingGear.GearState.LockedExtended;gearLamp.color=gearDown?Green:Color.gray;brakeLamp.color=input.brake>.05f?Amber:Color.gray;fuelLamp.color=f<500?Amber:Green;engineLamp.color=power>20?Green:Amber;
-  systems.text="GEAR "+aircraft.gearState+"  BRAKE "+(input.brake*100).ToString("0")+"%\nF-5E   NATIVE SYSTEMS";
+  systems.text="GEAR "+aircraft.gearState+"  BRAKE "+(input.brake*100).ToString("0")+"%\n"+Stores();
   string aoa=air.sqrMagnitude>=100? (Mathf.Atan2(-local.y,local.z)*Mathf.Rad2Deg).ToString("0.0"):"--";
   hudLeft.text="TAS "+tas.ToString("000")+" KM/H\nAOA "+aoa+" DEG\nFUEL "+f.ToString("0")+" KG";
   hudRight.text="ALT "+alt.ToString("0000")+" M\nV/S "+vvi.ToString("+0.0;-0.0;0.0")+" M/S\nRPM "+power.ToString("000")+"%";

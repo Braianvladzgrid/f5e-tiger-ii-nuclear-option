@@ -25,6 +25,23 @@ public sealed class F5FlightFix : BaseUnityPlugin
         return plane && ((plane.definition&&plane.definition.jsonKey=="F5E_TigerII") || plane.name.StartsWith("F5") || plane.transform.Find("F5Exterior") || plane.transform.Find("F5GearVisuals"));
     }
     void Awake() { new Harmony("vladzgrid.f5.flightsupport").PatchAll(typeof(F5FlightFix)); }
+    // The donor HUD has six pylon graphics. New centerline/cannon indices must
+    // remain valid; the compact F-5 panel reports all seven external stations.
+    [HarmonyPatch(typeof(PylonIndicator), "UpdateImages"), HarmonyPrefix]
+    static void ExpandPylonIndicator(PylonIndicator __instance) {
+        var plane=AccessTools.Field(typeof(PylonIndicator),"attachedAircraft").GetValue(__instance) as Aircraft;
+        if(!IsF5(plane))return;
+        var field=AccessTools.Field(typeof(PylonIndicator),"pylonElementSets");var old=field.GetValue(__instance) as Array;
+        if(old==null||old.Length>=8)return;
+        var element=old.GetType().GetElementType();var expanded=Array.CreateInstance(element,8);Array.Copy(old,expanded,old.Length);
+        for(int i=old.Length;i<8;i++) {
+            var set=Activator.CreateInstance(element);
+            foreach(var f in element.GetFields(BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic))if(f.FieldType.IsArray)f.SetValue(set,Array.CreateInstance(f.FieldType.GetElementType(),0));
+            expanded.SetValue(set,i);
+        }
+        field.SetValue(__instance,expanded);
+        Debug.Log("[F5HUD] Expanded native station index coverage to eight including cannon");
+    }
     void Update()
     {
         // Blueprinter finishes adding custom children after the donor's Awake.
