@@ -117,3 +117,28 @@ DA03BB62F16BD4E827233FA45159C32CB1739449D4DC1648AB4DF86B7C0AD759
   not had a new in-game spawn yet. Runtime SHA-256:
   de5c9b373ef00c787890a63ad85f39d5f8ad025535988ed438d63153ba33f765.
 - Temporary F5TestProbe.dll removed from the game addon after testing; only the production runtime DLL remains.
+
+2026-10-22 build 18, station and cockpit corrections:
+- Seven external stations: 2 wingtip rails (IRM-S2 single), 4 underwing pylons,
+  1 centerline pylon. Internal cannon is separate. Each external mount accepts
+  single native stores only; removed inherited multi-store racks/large options.
+- Mounts now bind to stable wing/fuselage AeroParts, with distinct transforms
+  and hardpoint indices. Moved stores forward and down; added visual pylons.
+- Editor audit checked all allowed store meshes against flap/aileron bounds at
+  local X deflections -45,-30,-15,0,15,30,45 degrees: no AABB overlap.
+  See Validation/station-audit18.txt. This is not a release/separation test.
+- Exterior-only copy of source seat, consoles and panel makes cabin contents
+  visible through the canopy; excluded duplicate glass/frame interior copies.
+- Live instrument cluster scaled to 72%, moved down 35 mm and forward 130 mm.
+  Airspeed/altitude dials now show knots/feet; native game HUD units remain as set.
+  Removed occluding imported blanks only from first-person cockpit, preserving
+  the exterior copy. New live panel includes five gauges, artificial horizon,
+  annunciators and supplementary HUD flight data.
+- Unity compilation, editor audit and exterior cabin render passed.
+- Aircraft bundle SHA-256:
+  2d4287bf5b5f5cf087f3a699925153dfb8a7821cd5abb65fed9eaf31b4ee463a
+- Runtime SHA-256:
+  c5d6198d883b56c233848698427c958091c297f808333959fb8377e306cf1d95
+- Installed both files. Fresh in-game cockpit/loadout review is still pending.
+- Temporary F5TestProbe is installed for this session and must be removed after
+  integration checks, before normal use. Landing/firing remain unvalidated.

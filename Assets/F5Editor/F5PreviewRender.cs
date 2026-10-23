@@ -16,7 +16,7 @@ public static class F5PreviewRender {
    var aircraft=new SerializedObject(F5Pipeline.Comp(root,"Aircraft"));
    var cockpit=aircraft.FindProperty("cockpitRenderers");
    for(int i=0;i<cockpit.arraySize;i++){var renderer=cockpit.GetArrayElementAtIndex(i).objectReferenceValue as Renderer;if(renderer)renderer.enabled=false;}
-   camera.cullingMask=~0;camera.transform.position=new Vector3(-12,7,14);camera.transform.LookAt(new Vector3(0,.2f,1));Save(camera,"exterior");camera.transform.position=new Vector3(-2,1.4f,-8);camera.transform.LookAt(new Vector3(0,.2f,-4.6f));Save(camera,"exhaust-closeup");
+   camera.cullingMask=~0;camera.transform.position=new Vector3(-12,7,14);camera.transform.LookAt(new Vector3(0,.2f,1));Save(camera,"exterior");camera.transform.position=new Vector3(-2,1.4f,-8);camera.transform.LookAt(new Vector3(0,.2f,-4.6f));Save(camera,"exhaust-closeup");camera.transform.position=new Vector3(-1,1.8f,4.1f);camera.transform.LookAt(new Vector3(0,.55f,3.7f));Save(camera,"exterior-cockpit");
    File.WriteAllLines("../../work/f5/contact-bounds.txt",root.GetComponentsInChildren<Collider>(true).Where(c=>c.enabled&&!c.isTrigger).OrderBy(c=>c.bounds.min.y).Select(c=>c.name+" "+c.GetType().Name+" min="+c.bounds.min.ToString("F3")+" max="+c.bounds.max.ToString("F3")));
    for(int i=0;i<cockpit.arraySize;i++){var renderer=cockpit.GetArrayElementAtIndex(i).objectReferenceValue as Renderer;if(renderer)renderer.enabled=true;}
    var eye=aircraft.FindProperty("cockpitViewPoint").objectReferenceValue as Transform;camera.transform.position=eye.position;camera.transform.rotation=root.transform.rotation;camera.cullingMask=~0;Save(camera,"cockpit");

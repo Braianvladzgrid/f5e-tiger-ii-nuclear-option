@@ -81,8 +81,14 @@ public static class F5AircraftBuilder {
     var source=own.FirstOrDefault(m=>m.name==name);if(!source)continue;var copy=Object.Instantiate(source.gameObject,cockpit.transform);copy.name=name+"_Interior";copy.transform.position=source.transform.position;copy.transform.rotation=source.transform.rotation;copy.transform.localScale=source.transform.lossyScale;copy.layer=nativeCockpit.gameObject.layer;
    }
    aircraft.Update();Renderers(aircraft,"cockpitRenderers",originalCockpit.Concat(cockpit.GetComponentsInChildren<Renderer>(true)));aircraft.ApplyModifiedPropertiesWithoutUndo();
+   // Exterior-only copy: native camera switching hides first-person cockpit meshes.
+   // Keep a separate seat, consoles and panel visible through the canopy outside.
+   var externalCockpit=Object.Instantiate(cockpit,root.transform);externalCockpit.name="F5CockpitExterior";
+   foreach(var tr in externalCockpit.GetComponentsInChildren<Transform>(true))tr.gameObject.layer=model.layer;
+   foreach(var renderer in externalCockpit.GetComponentsInChildren<Renderer>(true))renderer.enabled=true;
+   foreach(var tr in externalCockpit.GetComponentsInChildren<Transform>(true).Where(t=>t.name.EndsWith("_Interior")))tr.gameObject.SetActive(false);
    FitGear(root,own);FitSurfaces(root,own);FitHull(root,own);ConfigureEngine(root,own);ConfigureWeapons(root,parameters);
-   var detailRenderers=F5VisualPolish.Apply(root);aircraft.Update();Renderers(aircraft,"exteriorRenderers",own.Where(m=>!Interior(m.name)).Select(m=>m.GetComponent<Renderer>()).Concat(detailRenderers));aircraft.ApplyModifiedPropertiesWithoutUndo();
+   var detailRenderers=F5VisualPolish.Apply(root);aircraft.Update();Renderers(aircraft,"exteriorRenderers",own.Where(m=>!Interior(m.name)).Select(m=>m.GetComponent<Renderer>()).Concat(detailRenderers).Concat(externalCockpit.GetComponentsInChildren<Renderer>(true)).Concat(root.GetComponentsInChildren<Renderer>(true).Where(r=>r.name.StartsWith("F5Pylon"))));aircraft.ApplyModifiedPropertiesWithoutUndo();
    foreach(var part in root.GetComponentsInChildren<Component>(true).Where(c=>c&&c.GetType().Name=="AeroPart")) {
     var so=new SerializedObject(part);var mass=so.FindProperty("mass");if(mass!=null)mass.floatValue*=.72f;so.ApplyModifiedPropertiesWithoutUndo();
    }
@@ -176,12 +182,19 @@ public static class F5AircraftBuilder {
  }
  static void ConfigureWeapons(GameObject root,ScriptableObject parameters) {
   var wm=new SerializedObject(C(root,"WeaponManager"));var sets=wm.FindProperty("hardpointSets");
+  sets.arraySize=5; // Cannon plus three paired stations and one centerline.
+  string[][] options={new string[0],new[]{"AAM1_single","AAM3_single","AGM1_single","bomb_125_single","bomb_250_single","bomb_500_single","RocketPod1_single"},new[]{"AAM1_single","AAM3_single","bomb_125_single","bomb_250_single","RocketPod1_single"},new[]{"AAM3_single"},new[]{"bomb_125_single","bomb_250_single","bomb_500_single"}};
+  string[] labels={"Internal Cannon","Inner Wing Pylons (3/5)","Outer Wing Pylons (2/6)","Wingtip Rails (1/7)","Centerline Pylon (4)"};int index=0;
   for(int s=0;s<sets.arraySize;s++) {
-   var set=sets.GetArrayElementAtIndex(s);var points=set.FindPropertyRelative("hardpoints");set.FindPropertyRelative("name").stringValue=s==0?"Internal Cannon":"F-5 External Stations "+s;
+   var set=sets.GetArrayElementAtIndex(s);var points=set.FindPropertyRelative("hardpoints");set.FindPropertyRelative("name").stringValue=labels[s];
+   if(s>0){points.arraySize=s==4?1:2;var allowed=set.FindPropertyRelative("weaponOptions");allowed.arraySize=options[s].Length+1;allowed.GetArrayElementAtIndex(0).objectReferenceValue=null;for(int k=0;k<options[s].Length;k++)allowed.GetArrayElementAtIndex(k+1).objectReferenceValue=F5Pipeline.Native(options[s][k],".asset");set.FindPropertyRelative("SymmetryWithPrev").boolValue=false;set.FindPropertyRelative("precludingHardpointSets").arraySize=0;}
    for(int p=0;p<points.arraySize;p++) {
     var point=points.GetArrayElementAtIndex(p);var mount=point.FindPropertyRelative("transform").objectReferenceValue as Transform;
-    if(s>0 && mount){float x=(p%2==0?-1:1)*(s==1?1.3f:s==2?2.45f:4f);mount.position=root.transform.TransformPoint(new Vector3(x,-.2f,s==1?.5f:s==2?.2f:-.7f));}
+    if(s>0){float x=s==4?0:(p==0?-1:1)*(s==1?1.48f:s==2?2.72f:4.03f);string part=s==4?"fuselage":(s==3?"wingtip_":s==2?"wing2_":"wing1a_")+(p==0?"L":"R");var parent=T(root,part);mount=new GameObject("F5Station_"+s+"_"+p).transform;mount.SetParent(parent,true);mount.position=root.transform.TransformPoint(new Vector3(x,s==3?-.10f:-.55f,s==3?.15f:s==4?2.25f:s==1?1.65f:1.10f));mount.rotation=root.transform.rotation;point.FindPropertyRelative("transform").objectReferenceValue=mount;point.FindPropertyRelative("part").objectReferenceValue=C(parent.gameObject,"AeroPart");point.FindPropertyRelative("HardpointIndex").intValue=index++;point.FindPropertyRelative("pylonOptions").arraySize=0;point.FindPropertyRelative("Pylon").objectReferenceValue=null;point.FindPropertyRelative("Plug").objectReferenceValue=null;point.FindPropertyRelative("BuiltInWeapons").arraySize=0;point.FindPropertyRelative("BuiltInTurrets").arraySize=0;
+     if(s!=3){var pylon=GameObject.CreatePrimitive(PrimitiveType.Cube);Object.DestroyImmediate(pylon.GetComponent<Collider>());pylon.name="F5Pylon_"+s+"_"+p;pylon.transform.SetParent(parent,true);pylon.transform.position=mount.position+root.transform.up*.22f;pylon.transform.rotation=root.transform.rotation;pylon.transform.localScale=new Vector3(.065f,.44f,.70f);pylon.GetComponent<Renderer>().sharedMaterial=AssetDatabase.LoadAssetAtPath<Material>(R+"/Visual/ExhaustSteel.mat");}
+    }else point.FindPropertyRelative("HardpointIndex").intValue=7;
     point.FindPropertyRelative("bayDoors").arraySize=0;
+    point.FindPropertyRelative("doorOpenDuration").floatValue=0;
    }
   }wm.ApplyModifiedPropertiesWithoutUndo();
  }
@@ -221,7 +234,7 @@ public static class F5AircraftBuilder {
   if(ps.FindProperty("liveries").arraySize<2)throw new Exception("Both factions require a selectable livery");
   var report="Tier: 2\nPrice: 14000000\nNative landing gears: 3\nOwn icon: assigned\nNative systems: retained\nIn-game flight: NOT TESTED\n";File.WriteAllText("../../work/f5/build-validation.txt",report);
  }
- public static void BuildAndPreview(){Build();F5PreviewRender.Capture();}
+ public static void BuildAndPreview(){Build();F5PreviewRender.Capture();F5StationAudit.Run();}
 }
 
 
