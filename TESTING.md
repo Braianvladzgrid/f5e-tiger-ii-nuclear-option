@@ -164,3 +164,20 @@ DA03BB62F16BD4E827233FA45159C32CB1739449D4DC1648AB4DF86B7C0AD759
 - Final fresh-spawn ground-clearance/HUD checks are pending at this checkpoint.
 - Probe DLL moved out of the game directory after this test process loaded it.
   It remains active only in the current game process; next launch is normal.
+
+Build 19 verification completed 2026-10-22:
+- Fresh cockpit reviewed in game: compact gauges, attitude instrument and HUD
+  telemetry visible; occluding source blanks removed. Seven-station readout loads.
+- Loadout menu confirms centerline 500 kg option removed; two GPO-500 underwing
+  and one PAB-250 centerline used for this clearance check.
+- Fresh spawn and runway settling retained all 28 recorded parts at 100 health.
+- Controlled native-force takeoff climbed >100 m; subsequent recorded flight
+  also retained all parts at 100. No F5Contact events in this test log.
+- Short approach/landing fixture reached a stopped state, all 28 parts at 100
+  health (LANDING STOPPED at 2026-10-23T01:52:45Z). This is a local placed-approach
+  fixture, not a manually flown circuit or validation at every airfield/loadout.
+- PylonIndicator index exception did not recur; F5HUD expansion logged.
+- Evidence: work/f5/test-telemetry-build19.txt, Player-build19.log.
+- External weapon launch/separation, manual controller landing circuits and
+  complete orbit-camera behavior are still unvalidated. Keep prototype status.
+- Temporary probe removed from addon folder. Test process closed after checks.

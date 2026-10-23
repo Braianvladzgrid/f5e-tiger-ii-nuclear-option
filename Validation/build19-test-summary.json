@@ -1,0 +1,9 @@
+{
+  "samples": 208,
+  "maximum_speed_mps": 202.514,
+  "maximum_altitude_msl": 425.2631,
+  "minimum_part_health": 100.0,
+  "takeoff_100m_climb_recorded": true,
+  "placed_approach_stop_recorded": true,
+  "limitation": "Development control fixture; not a manual landing circuit, full weapon release/separation test, or orbit camera certification."
+}

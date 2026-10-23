@@ -16,7 +16,7 @@ represents the engine pair, with two nozzle effects. This is an adaptation,
 not an authentic F-5 systems simulation. The source instruments are supplemented with live native-value gauges and a cockpit HUD data block. This does not reproduce authentic F-5 avionics.
 
 The model has its own silhouette icon, source landing-gear folding tracks,
-three native wheel-contact assemblies, and seven single-store external stations (two wingtip rails, four underwing pylons, one centerline pylon). Only IRM-S2 singles are allowed on the wingtip rails.
+three native wheel-contact assemblies, and seven single-store external stations (two wingtip rails, four underwing pylons, one centerline pylon). Only IRM-S2 singles are allowed on the wingtip rails; centerline stores are limited to 125/250 kg bombs for ground clearance.
 The runtime support is scoped to `F5E_TigerII`: mass stations, manual-only
 braking and source gear animation. It preserves the Su-25 runtime's brake patch
 when both plugins are present.
