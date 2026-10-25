@@ -10,10 +10,10 @@ using UnityEngine;
 public sealed class F5TestProbe:BaseUnityPlugin {
  const string Folder=@"C:\Users\braia\Documents\Codex\2026-10-10\tui\work\f5";
  static Aircraft target;
- static bool driving,takeoff,cruise,landing,touched; static float firingUntil,approachStarted;
+ static bool driving,takeoff,cruise,landing,touched,fullPower; static float firingUntil,approachStarted;
  static float throttle,pitch,roll,yaw,brake=1,until,startY,runwayY;
  static Vector3 heading;
- float next;
+ bool bindingsLogged; float next; static int launchStation=-1; static float launchUntil,launchReport;
  static object Field(object o,string n)=>AccessTools.Field(o.GetType(),n)?.GetValue(o);
  static bool Own(Aircraft a)=>a&&a.definition&&a.definition.jsonKey=="F5E_TigerII";
  void Awake(){new Harmony("local.f5.testprobe").PatchAll(typeof(F5TestProbe));}
@@ -21,9 +21,11 @@ public sealed class F5TestProbe:BaseUnityPlugin {
  void Log(string s){File.AppendAllText(Path.Combine(Folder,"test-telemetry.txt"),DateTime.UtcNow.ToString("O")+" "+s+Environment.NewLine);}
  void Update(){
   if(Time.unscaledTime<next)return;next=Time.unscaledTime+1;
+  if(!bindingsLogged&&Rewired.ReInput.isReady){bindingsLogged=true;foreach(var action in Rewired.ReInput.mapping.Actions)if(action.name.Contains("View")||action.name.Contains("Camera")||action.name=="Center")Log("ACTION id="+action.id+" name="+action.name);}
   Aircraft a;if(!GameManager.GetLocalAircraft(out a)||!Own(a))return;
   if(target!=a){target=a;driving=true;takeoff=landing=false;throttle=pitch=roll=yaw=0;brake=1;until=Time.unscaledTime+600;Log("FIXTURE hold new spawn at idle with brake");}
   if(firingUntil>0&&Time.unscaledTime>=firingUntil){a.SetFiringState(0,false);firingUntil=0;Log("GUN STOP "+Guns(a));}
+  if(launchReport>0&&Time.unscaledTime>=launchReport){a.SetFiringState(launchStation,false);Log("LAUNCH AFTER "+Station(a,launchStation));launchReport=0;launchStation=-1;}
   var path=Path.Combine(Folder,"test-command.txt");
   if(File.Exists(path)) {
    var command=File.ReadAllText(path).Trim();File.Delete(path);target=a;
@@ -40,10 +42,14 @@ public sealed class F5TestProbe:BaseUnityPlugin {
      Physics.SyncTransforms();a.SetGear(true);driving=true;takeoff=landing=false;throttle=pitch=roll=yaw=0;brake=1;until=Time.unscaledTime+180;
      if(command=="approach"){landing=true;touched=false;approachStarted=Time.unscaledTime;throttle=.25f;brake=0;until=Time.unscaledTime+120;}
      Log("FIXTURE placed at runway; subsequent motion uses native forces. heading="+heading);
-    } else if(command=="takeoff") {driving=takeoff=true;landing=false;cruise=false;startY=a.GlobalPosition().y;until=Time.unscaledTime+150;throttle=1;brake=0;}
+    } else if(command=="takeoff") {driving=takeoff=true;landing=false;cruise=false;startY=a.GlobalPosition().y;until=Time.unscaledTime+600;throttle=1;brake=0;}
+    else if(command=="full_power"){fullPower=true;Log("SPEED TEST full power; native forces and controlled altitude, no speed hold");}
+    else if(command=="cruise"){fullPower=false;}
     else if(command=="stop"){driving=true;takeoff=landing=false;throttle=pitch=roll=yaw=0;brake=1;until=Time.unscaledTime+180;}
     else if(command=="release"){driving=takeoff=landing=false;}
     else if(command=="fire_gun"){a.SetFiringState(0,true);firingUntil=Time.unscaledTime+3;Log("GUN START "+Guns(a));}
+    else if(command=="stations"){foreach(var station in a.weaponStations)Log("STATION "+Station(a,station.Number));}
+    else if(command.StartsWith("fire_station ")){int n=int.Parse(command.Substring(13));var manager=Field(a,"weaponManager") as WeaponManager;Log("LAUNCH BEFORE "+Station(a,n));manager.SetActiveStation((byte)n);launchStation=n;launchUntil=Time.unscaledTime+.3f;launchReport=Time.unscaledTime+2;}
     else if(command=="gear_up")a.SetGear(false);
     else if(command=="gear_down")a.SetGear(true);
     else if(command.StartsWith("throttle ")){driving=true;takeoff=false;throttle=float.Parse(command.Substring(9),System.Globalization.CultureInfo.InvariantCulture);pitch=roll=yaw=brake=0;until=Time.unscaledTime+30;}
@@ -51,11 +57,20 @@ public sealed class F5TestProbe:BaseUnityPlugin {
    }catch(Exception ex){Log("COMMAND FAILED "+ex);driving=takeoff=landing=false;}
   }
   var rb=a.CockpitRB();var input=a.GetInputs();
+  var cam=FindObjectOfType<CameraStateManager>();Log("CAMERA "+(cam?cam.currentState.GetType().Name:"none")+" pan="+(cam?Field(cam.currentState,"panView"):null)+" tilt="+(cam?Field(cam.currentState,"tiltView"):null));
   Log("speed="+rb.velocity.magnitude+" altitude="+a.GlobalPosition().y+" mass="+a.GetMass()+" CG="+a.transform.InverseTransformPoint(a.GetCenterOfMass())+" controls="+input.throttle+","+input.pitch+","+input.roll+","+input.yaw+","+input.brake+" rotation="+a.transform.eulerAngles+" health="+string.Join(",",a.partLookup.Select(p=>p.name+":"+p.hitPoints).ToArray()));
   foreach(var g in FindObjectsOfType<LandingGear>().Where(g=>(Aircraft)Field(g,"aircraft")==a))Log("GEAR "+g.name+" fold="+Field(g,"foldAmount")+" compression="+Field(g,"compressionDistance")+" contact="+g.WeightOnWheel(.1f)+" bump="+a.transform.InverseTransformPoint(((GameObject)Field(g,"bumpStop")).transform.position));
-  foreach(var e in FindObjectsOfType<Turbojet>().Where(e=>(Aircraft)Field(e,"aircraft")==a))Log("ENGINE "+e.name+" max="+Field(e,"maxThrust")+" current="+Field(e,"thrust"));
+  foreach(var e in FindObjectsOfType<Turbojet>().Where(e=>(Aircraft)Field(e,"aircraft")==a)){
+   Log("ENGINE "+e.name+" max="+Field(e,"maxThrust")+" current="+Field(e,"thrust")+" afterburnerOn="+Field(e,"afterburnerOn"));
+   foreach(var nozzle in (Array)Field(e,"nozzles"))foreach(var burner in (Array)Field(nozzle,"afterburners")){
+    var flame=Field(burner,"flameRenderer") as Renderer;
+    Log("AFTERBURNER "+((Component)nozzle).name+" amount="+Field(burner,"afterburnerAmount")+" flameEnabled="+(flame&&flame.enabled)+" active="+(flame&&flame.gameObject.activeInHierarchy));
+   }
+  }
  }
+ string Station(Aircraft a,int n){var s=a.weaponStations[n];return "station="+n+" name="+s.WeaponInfo.weaponName+" total="+s.GetAmmoTotal()+" safety="+s.SafetyIsOn(a)+" ready="+s.Ready()+" intactHardpointWeapons="+s.Weapons.Count(w=>w&&w.IsAttached());}
  void FixedUpdate(){
+  if(launchStation>=0&&Time.unscaledTime<launchUntil&&Own(target)){var manager=Field(target,"weaponManager") as WeaponManager;if(manager)manager.Fire();}
   if(firingUntil>Time.unscaledTime&&Own(target)){var manager=Field(target,"weaponManager") as WeaponManager;if(manager)manager.FireGuns();}
   if(!driving||!Own(target))return;
   if(Time.unscaledTime>until){driving=takeoff=false;Log("TIMEOUT released all test inputs");return;}
@@ -68,7 +83,7 @@ public sealed class F5TestProbe:BaseUnityPlugin {
   pitch=Mathf.Clamp(Mathf.DeltaAngle(target.transform.eulerAngles.x,desiredPitch)*.12f-angular.x*.3f,-.9f,.9f);
   roll=Mathf.Clamp(Mathf.DeltaAngle(0,target.transform.eulerAngles.z)*.04f+angular.z*.2f,-.3f,.3f);
   yaw=Mathf.Clamp(Vector3.SignedAngle(Vector3.ProjectOnPlane(target.transform.forward,Vector3.up),heading,Vector3.up)/20,-.3f,.3f);
-  throttle=cruise?Mathf.Clamp(.6f+(180-speed)*.01f,.3f,.9f):1;brake=0;
+  throttle=fullPower?1:cruise?Mathf.Clamp(.6f+(180-speed)*.01f,.3f,.9f):1;brake=0;
   if(!cruise&&target.GlobalPosition().y-startY>100){Log("TAKEOFF PASS: 100m climb using native forces; continuing controlled flight");cruise=true;}
  }
  [HarmonyPatch(typeof(Aircraft),"GetInputs"),HarmonyPostfix,HarmonyPriority(Priority.Last)]

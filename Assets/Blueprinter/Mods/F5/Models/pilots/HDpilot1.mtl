@@ -1,0 +1,85 @@
+newmtl HDpilot1_material_0
+Kd 0.588 0.588 0.588
+d 1.0
+illum 2
+map_Kd Tex_0008_1.jpg
+newmtl HDpilot1_material_1
+Kd 0.588 0.588 0.588
+d 1.0
+illum 2
+map_Kd Tex_0005_1.jpg
+newmtl HDpilot1_material_2
+Kd 0.588 0.588 0.588
+d 1.0
+illum 2
+map_Kd Tex_0005_1.jpg
+newmtl HDpilot1_material_3
+Kd 0.588 0.588 0.588
+d 0.0
+illum 2
+map_Kd Tex_0006_1.png
+newmtl HDpilot1_material_4
+Kd 0.588 0.588 0.588
+d 1.0
+illum 2
+map_Kd Tex_0004_1.jpg
+newmtl HDpilot1_material_5
+Kd 0.588 0.588 0.588
+d 0.0
+illum 2
+map_Kd Tex_0006_1.png
+newmtl HDpilot1_material_6
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd Tex_0006_1.png
+newmtl HDpilot1_material_7
+Kd 0.0 0.0 1.0
+d 1.0
+illum 2
+map_Kd Tex_0006_1.png
+newmtl HDpilot1_material_8
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2
+map_Kd Tex_0006_1.png
+newmtl HDpilot1_material_9
+Kd 0.588 0.588 0.588
+d 1.0
+illum 2
+map_Kd Tex_0004_1.jpg
+newmtl HDpilot1_material_10
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+map_Kd Tex_0004_1.jpg
+newmtl HDpilot1_material_11
+Kd 0.266667 0.266667 0.266667
+d 0.32899999999999996
+illum 2
+map_Kd Tex_0004_1.jpg
+newmtl HDpilot1_material_12
+Kd 0.588 0.588 0.588
+d 0.7
+illum 2
+map_Kd Tex_0004_1.jpg
+newmtl HDpilot1_material_13
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+newmtl HDpilot1_material_14
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+newmtl HDpilot1_material_15
+Kd 1.0 1.0 1.0
+d 1.0
+illum 2
+newmtl HDpilot1_material_16
+Kd 0.0 0.0 1.0
+d 1.0
+illum 2
+newmtl HDpilot1_material_17
+Kd 0.0 0.0 0.0
+d 1.0
+illum 2

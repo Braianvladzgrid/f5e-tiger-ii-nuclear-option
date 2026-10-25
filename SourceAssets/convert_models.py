@@ -66,7 +66,7 @@ def parse_ac(path):
     raise ValueError(f'No object in {path}')
 
 stats=[]
-for path in [SOURCE/'Models/f5emin.ac']:
+for path in [SOURCE/'Models/f5emin.ac', SOURCE/'Models/pilots/HDpilot1.ac']:
     if any(p in path.parts for p in ('Effects','Lights','Payload','Pilot')): continue
     materials,root=parse_ac(path)
     rel=path.relative_to(SOURCE/'Models')

@@ -56,7 +56,8 @@ public static class F5AircraftBuilder {
    var cockpit=new GameObject("F5Cockpit");cockpit.transform.SetParent(root.transform,false);
    var nativeCockpit=T(root,"cockpit_interior");
    foreach(var mf in own) {
-    if(mf.name=="Pilot"||mf.name.StartsWith("LR-arm")||mf.name=="tailhook"||mf.name.StartsWith("revoprobe")){mf.gameObject.SetActive(false);continue;}
+    // Source pilot belongs to the exterior set, hidden by native cockpit view.
+    if(mf.name=="tailhook"||mf.name.StartsWith("revoprobe")){mf.gameObject.SetActive(false);continue;}
     if(Interior(mf.name)){mf.transform.SetParent(cockpit.transform,true);mf.gameObject.layer=nativeCockpit.gameObject.layer;}
     ConvertMaterials(mf);
     // Live gauges replace the unconnected source indicator blanks and knobs.
@@ -87,8 +88,13 @@ public static class F5AircraftBuilder {
    foreach(var tr in externalCockpit.GetComponentsInChildren<Transform>(true))tr.gameObject.layer=model.layer;
    foreach(var renderer in externalCockpit.GetComponentsInChildren<Renderer>(true))renderer.enabled=true;
    foreach(var tr in externalCockpit.GetComponentsInChildren<Transform>(true).Where(t=>t.name.EndsWith("_Interior")))tr.gameObject.SetActive(false);
+   // The main AC3D file has empty pilot markers; its occupied cockpit is a
+   // separately licensed source model, referenced by FlightGear's pilot.xml.
+   var pilot=Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>(R+"/Models/pilots/HDpilot1.obj"));pilot.name="F5ExteriorPilot";
+   pilot.transform.position=root.transform.TransformPoint(Offset+new Vector3(0,.5f,2.5f)*.973f);pilot.transform.rotation=root.transform.rotation;pilot.transform.localScale=Vector3.one*.973f;pilot.transform.SetParent(T(root,"cockpit"),true);
+   foreach(var mf in pilot.GetComponentsInChildren<MeshFilter>(true)){mf.gameObject.layer=model.layer;ConvertMaterials(mf);}
    FitGear(root,own);FitSurfaces(root,own);FitHull(root,own);ConfigureEngine(root,own);ConfigureWeapons(root,parameters);
-   var detailRenderers=F5VisualPolish.Apply(root);aircraft.Update();Renderers(aircraft,"exteriorRenderers",own.Where(m=>!Interior(m.name)).Select(m=>m.GetComponent<Renderer>()).Concat(detailRenderers).Concat(externalCockpit.GetComponentsInChildren<Renderer>(true)).Concat(root.GetComponentsInChildren<Renderer>(true).Where(r=>r.name.StartsWith("F5Pylon"))));aircraft.ApplyModifiedPropertiesWithoutUndo();
+   var detailRenderers=F5VisualPolish.Apply(root);aircraft.Update();Renderers(aircraft,"exteriorRenderers",own.Where(m=>!Interior(m.name)).Select(m=>m.GetComponent<Renderer>()).Concat(detailRenderers).Concat(pilot.GetComponentsInChildren<Renderer>(true)).Concat(externalCockpit.GetComponentsInChildren<Renderer>(true)).Concat(root.GetComponentsInChildren<Renderer>(true).Where(r=>r.name.StartsWith("F5Pylon"))));aircraft.ApplyModifiedPropertiesWithoutUndo();
    foreach(var part in root.GetComponentsInChildren<Component>(true).Where(c=>c&&c.GetType().Name=="AeroPart")) {
     var so=new SerializedObject(part);var mass=so.FindProperty("mass");if(mass!=null)mass.floatValue*=.72f;so.ApplyModifiedPropertiesWithoutUndo();
    }
@@ -177,7 +183,12 @@ public static class F5AircraftBuilder {
   var nozzle=C(root,"JetNozzle");var clone=Object.Instantiate(nozzle.gameObject,nozzle.transform.parent);clone.name="F5Nozzle_R";nozzle.name="F5Nozzle_L";
   nozzle.transform.position=root.transform.TransformPoint(new Vector3(-.32f,.02f,-4.9f));clone.transform.position=root.transform.TransformPoint(new Vector3(.32f,.02f,-4.9f));
   for(int side=0;side<2;side++){var effectRoot=side==0?nozzle.transform:clone.transform;var target=root.transform.TransformPoint(new Vector3(side==0?-.27f:.27f,.185f,-5.135f));var delta=target-effectRoot.position;foreach(Transform child in effectRoot)if(child.GetComponentsInChildren<Renderer>(true).Length>0||child.GetComponentsInChildren<ParticleSystem>(true).Length>0)child.position+=delta;}
-  foreach(var n in new[]{nozzle.gameObject,clone})foreach(var tr in n.GetComponentsInChildren<Transform>(true).Where(t=>t.name.IndexOf("afterburn",StringComparison.OrdinalIgnoreCase)>=0))tr.localScale*=.45f;
+  foreach(var n in new[]{nozzle.gameObject,clone})foreach(var tr in n.GetComponentsInChildren<Transform>(true).Where(t=>t.name.IndexOf("afterburn",StringComparison.OrdinalIgnoreCase)>=0).ToArray()) {
+   // Afterburner.Run writes flame.localScale every frame. Keep adaptation
+   // scale on a parent so native ignition/flicker retains the correct size.
+   if(tr.name.IndexOf("flame",StringComparison.OrdinalIgnoreCase)>=0){var fit=new GameObject("F5FlameFit").transform;fit.SetParent(tr.parent,false);fit.localPosition=tr.localPosition;fit.localRotation=tr.localRotation;tr.SetParent(fit,false);tr.localPosition=Vector3.zero;tr.localRotation=Quaternion.identity;fit.localScale=Vector3.one*.45f;}
+   else tr.localScale*=.45f;
+  }
   jet.Update();var nozzles=jet.FindProperty("nozzles");nozzles.arraySize=2;nozzles.GetArrayElementAtIndex(0).objectReferenceValue=nozzle;nozzles.GetArrayElementAtIndex(1).objectReferenceValue=C(clone,"JetNozzle");jet.ApplyModifiedPropertiesWithoutUndo();
  }
  static void ConfigureWeapons(GameObject root,ScriptableObject parameters) {

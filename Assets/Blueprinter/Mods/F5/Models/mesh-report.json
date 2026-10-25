@@ -140,5 +140,42 @@
         8.35485
       ]
     ]
+  },
+  {
+    "mesh": "pilots\\HDpilot1.ac",
+    "vertices": 16067,
+    "triangles": 31148,
+    "parts": [
+      "part",
+      "PILOT",
+      "body",
+      "PILOT.001",
+      "head.001",
+      "PILOT.002",
+      "head",
+      "PILOT.003",
+      "PILOT_1",
+      "kit",
+      "PILOT.004",
+      "PILOT_1.001",
+      "PILOT.005",
+      "helmet",
+      "l-eye",
+      "l-eye.001",
+      "r-eye",
+      "r-eye.001"
+    ],
+    "bounds": [
+      [
+        -0.339437,
+        -0.793237,
+        -0.220175
+      ],
+      [
+        0.369389,
+        0.667836,
+        0.881108
+      ]
+    ]
   }
 ]

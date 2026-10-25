@@ -181,3 +181,35 @@ Build 19 verification completed 2026-10-22:
 - External weapon launch/separation, manual controller landing circuits and
   complete orbit-camera behavior are still unvalidated. Keep prototype status.
 - Temporary probe removed from addon folder. Test process closed after checks.
+
+2026-10-25 mixed-loadout flight, build 19:
+- Two AGM-48, two AGR-18 pods (14 rockets), two IRM-S2 and one PAB-250
+  were loaded. Native WeaponManager.Fire consumed 2 AGM, 3 rockets, 2 IRM and
+  the central bomb with normal safety/ready checks; all 28 sampled parts stayed
+  at 100 health during this controlled flight. No F5Contact event was logged.
+- Cockpit, orbit and TV camera states were recorded. Orbit pan/tilt changed;
+  TV view is a native mode. This does not certify every manual controller mapping.
+- Peak recorded speed was 751.44 km/h while the fixture actively reduced
+  throttle for cruise. This is NOT a maximum-speed result.
+- Evidence: work/f5/test-telemetry-build19-weapons25.txt and
+  Player-build19-weapons25.log; Validation/build19-weapons25-summary.json.
+- Weapon.IsAttached describes intact hardpoints, not launched missile attachment.
+  No target hit, exhaustive loadout separation, or full manual circuit certified.
+
+2026-10-25 build 22 visual correction:
+- Imported the separate HDpilot1 model/textures from the pinned source archive.
+  The main aircraft file's Pilot/arm markers contain no geometry. Exterior render
+  preview confirms the pilot seated inside the cockpit. Native exterior visibility
+  includes the pilot; it is excluded from the first-person cockpit renderer set.
+- Native Afterburner.Run overwrites flame localScale every frame. Moved the
+  F-5 fit scale onto a separate parent, preserving native ignition, brightness
+  and flicker while keeping the fitted flame size. Physics/thrust are unchanged.
+- Unity BuildAndPreview and the station surface-sweep audit passed.
+- Bundle SHA-256: 7a971eda6d086f847f078baa10d9c62c21ad472b8477cfc5f205a39250a19bb6.
+- In-game pilot visibility, both animated flames at full throttle and actual
+  maximum level speed remain pending. A full_power fixture mode was compiled
+  to remove the previous speed hold and log both burner amounts/render states.
+- The active game received build 20 before this final separate pilot import.
+  Build 22 is packaged and copied into the addon; restart and the full-power run are pending
+  while the user is operating the game. Probe DLL is out of the addon directory;
+  its old code remains loaded until that game process closes.

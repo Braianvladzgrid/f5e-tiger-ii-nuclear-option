@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-25",
+  "build": 19,
+  "test": "native-force mixed-loadout controlled flight",
+  "samples": 261,
+  "peak_speed_kmh": 751.43916,
+  "ammo": {
+    "PAB250": "1 -> 0",
+    "AGM48": "2 -> 0",
+    "AGR18": "14 -> 11",
+    "IRMS2": "2 -> 0"
+  },
+  "launch_path": "WeaponManager.Fire with normal safety/ready checks",
+  "camera_states": [
+    "CameraCockpitState",
+    "CameraOrbitState",
+    "CameraTVState"
+  ],
+  "limitations": "No target-hit validation; no measured aircraft maximum speed; native Weapon.IsAttached reports hardpoint integrity, not launch separation; no full manual circuit."
+}
