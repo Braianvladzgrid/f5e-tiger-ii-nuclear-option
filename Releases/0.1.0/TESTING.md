@@ -213,3 +213,33 @@ Build 19 verification completed 2026-10-22:
   Build 22 is packaged and copied into the addon; restart and the full-power run are pending
   while the user is operating the game. Probe DLL is out of the addon directory;
   its old code remains loaded until that game process closes.
+
+2026-10-25 in-game build 22 power-cycle verification and critical failure:
+- Exterior pilot visually confirmed from a side orbit view, on runway and in
+  flight. Observer framing used the test probe, not a test of user camera mapping.
+- Both native flames visibly lit/flickered at full power (amount 0.9999992).
+  Following throttle reduction, both renderers disabled within approximately
+  three seconds; all 28 parts were still at 100 health at that moment.
+- Clean aircraft, gear retracted, reached 1835.18 km/h in the recorded full-power
+  phase, holding approximately 1735 m MSL. The prior 750 km/h observation was
+  from cruise speed hold, not a cap on the production aircraft.
+- The first long low-altitude run collided with terrain. This is a failed
+  route/altitude fixture and is not evidence of random structural failure.
+- A high-altitude power-reduction run then failed with structural damage.
+  The fixture also changed its altitude target at that point; corrected the
+  fixture to preserve the target when reducing throttle.
+- A repeat with constant altitude ALSO failed near the transonic deceleration
+  phase. Thus the altitude-command bug did not fully explain the damage.
+  Self contacts were logged between vertical-tail halves and flap/aileron parts.
+  Their causal role has not been proven; do not call this a successful slowdown.
+- Candidate build 23 added 5 cm hull seam gaps, retained normal collision/damage,
+  built successfully and passed static penetration/store-sweep checks, but also
+  FAILED the same in-game slowdown. Candidate rejected and build 22 restored in
+  source, warm project, installed addon and release. Production runtime unchanged.
+- Evidence: work/f5/test-telemetry-build22-high-route.txt,
+  test-telemetry-build22-level-deceleration.txt,
+  test-telemetry-build23-deceleration-fail.txt, corresponding Player logs;
+  Validation/build22-power-cycle-summary.json, collision-audit23.txt.
+- Supersonic slowdown/damage diagnosis remains open. Keep prototype status.
+  The game was closed and the temporary probe DLL removed from the addon;
+  next launch uses normal controls.

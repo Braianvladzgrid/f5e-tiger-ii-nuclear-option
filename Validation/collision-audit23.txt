@@ -1,0 +1,2 @@
+Unlinked hull penetrations=0
+Seam gaps vertical tail / right flap-aileron / left flap-aileron=0.0500, 0.0500, 0.0500

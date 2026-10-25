@@ -11,7 +11,7 @@ public sealed class F5TestProbe:BaseUnityPlugin {
  const string Folder=@"C:\Users\braia\Documents\Codex\2026-10-10\tui\work\f5";
  static Aircraft target;
  static bool driving,takeoff,cruise,landing,touched,fullPower; static float firingUntil,approachStarted;
- static float throttle,pitch,roll,yaw,brake=1,until,startY,runwayY;
+ static float throttle,pitch,roll,yaw,brake=1,until,startY,runwayY,cruiseHeight=300;
  static Vector3 heading;
  bool bindingsLogged; float next; static int launchStation=-1; static float launchUntil,launchReport;
  static object Field(object o,string n)=>AccessTools.Field(o.GetType(),n)?.GetValue(o);
@@ -43,8 +43,15 @@ public sealed class F5TestProbe:BaseUnityPlugin {
      if(command=="approach"){landing=true;touched=false;approachStarted=Time.unscaledTime;throttle=.25f;brake=0;until=Time.unscaledTime+120;}
      Log("FIXTURE placed at runway; subsequent motion uses native forces. heading="+heading);
     } else if(command=="takeoff") {driving=takeoff=true;landing=false;cruise=false;startY=a.GlobalPosition().y;until=Time.unscaledTime+600;throttle=1;brake=0;}
-    else if(command=="full_power"){fullPower=true;Log("SPEED TEST full power; native forces and controlled altitude, no speed hold");}
+    else if(command=="full_power"){fullPower=true;cruiseHeight=1500;Log("SPEED TEST full power; native forces and controlled altitude, no speed hold");}
     else if(command=="cruise"){fullPower=false;}
+    else if(command=="view_side"||command=="view_back"){
+     var camera=FindObjectOfType<CameraStateManager>();var state=camera.currentState;
+     if(state.GetType().Name!="CameraOrbitState")throw new Exception("Select native orbit view first");
+     AccessTools.Field(state.GetType(),"panView").SetValue(state,command=="view_side"?75f:0f);
+     AccessTools.Field(state.GetType(),"tiltView").SetValue(state,command=="view_side"?8f:20f);
+     Log("OBSERVER camera framing only; not a controller mapping test");
+    }
     else if(command=="stop"){driving=true;takeoff=landing=false;throttle=pitch=roll=yaw=0;brake=1;until=Time.unscaledTime+180;}
     else if(command=="release"){driving=takeoff=landing=false;}
     else if(command=="fire_gun"){a.SetFiringState(0,true);firingUntil=Time.unscaledTime+3;Log("GUN START "+Guns(a));}
@@ -79,7 +86,8 @@ public sealed class F5TestProbe:BaseUnityPlugin {
   if(target.partLookup.Any(p=>p.hitPoints<=0)){Log("TAKEOFF FAIL: structural damage; stopping test");takeoff=false;throttle=pitch=roll=yaw=0;brake=1;return;}
   var rb=target.CockpitRB();float speed=rb.velocity.magnitude;var angular=target.transform.InverseTransformDirection(rb.angularVelocity);
   float desiredPitch=speed>65?-10:0;
-  if(cruise)desiredPitch=-Mathf.Clamp(4+(startY+300-target.GlobalPosition().y)*.04f,-4,12);
+  // Reducing throttle must not simultaneously command a 1200 m descent.
+  if(cruise)desiredPitch=-Mathf.Clamp(4+(startY+cruiseHeight-target.GlobalPosition().y)*.04f,-4,12);
   pitch=Mathf.Clamp(Mathf.DeltaAngle(target.transform.eulerAngles.x,desiredPitch)*.12f-angular.x*.3f,-.9f,.9f);
   roll=Mathf.Clamp(Mathf.DeltaAngle(0,target.transform.eulerAngles.z)*.04f+angular.z*.2f,-.3f,.3f);
   yaw=Mathf.Clamp(Vector3.SignedAngle(Vector3.ProjectOnPlane(target.transform.forward,Vector3.up),heading,Vector3.up)/20,-.3f,.3f);

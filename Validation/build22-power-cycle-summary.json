@@ -1,0 +1,19 @@
+{
+  "build": 22,
+  "date": "2026-10-25",
+  "test": "clean-loadout native-force flight with test control inputs",
+  "samples_before_cruise": 184,
+  "peak_speed_kmh": 1835.18172,
+  "minimum_health_before_cruise": 100.0,
+  "full_power_steady_speed_mps": 509.2,
+  "full_power_steady_altitude_msl_m": 1735.4,
+  "pilot_exterior_visually_confirmed": true,
+  "burner_on_both": "amount 0.9999992, flameEnabled=True",
+  "burner_off_both": "22:06:07Z amount 0.002237759, flameEnabled=False; all 28 parts at 100",
+  "result": "Full-power and burner cycle passed; subsequent automatic descent/deceleration FAILED with oscillation and structural damage",
+  "limitation": "Not maximum-speed certification across all loads/altitudes or a manual-controller high-speed deceleration check",
+  "telemetry": "work/f5/test-telemetry-build22-high-route.txt",
+  "player_log": "work/f5/Player-build22-high-route.log",
+  "constant_altitude_slowdown_repeat": "FAILED; structural damage and self-contact events near transonic deceleration",
+  "candidate23_seam_clearance_repeat": "FAILED; candidate rejected, installed build22 restored"
+}

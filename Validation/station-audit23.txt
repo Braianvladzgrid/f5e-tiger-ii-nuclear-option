@@ -1,0 +1,36 @@
+Inner Wing Pylons (3/5) (-1.480, -0.150, 1.650)
+  AAM1_single min=(-1.656, -0.537, 0.417) max=(-1.304, -0.127, 3.288) surfaceSweepAabbOverlap=False
+  AAM3_single min=(-1.594, -0.486, 0.589) max=(-1.366, -0.138, 3.144) surfaceSweepAabbOverlap=False
+  AGM1_single min=(-1.591, -0.480, 0.873) max=(-1.369, -0.132, 2.493) surfaceSweepAabbOverlap=False
+  bomb_125_single min=(-1.583, -0.472, 0.741) max=(-1.377, -0.129, 2.408) surfaceSweepAabbOverlap=False
+  bomb_250_single min=(-1.623, -0.553, 0.424) max=(-1.337, -0.129, 2.675) surfaceSweepAabbOverlap=False
+  bomb_500_single min=(-1.690, -0.701, 0.385) max=(-1.270, -0.143, 3.117) surfaceSweepAabbOverlap=False
+  RocketPod1_single min=(-1.666, -0.554, 0.621) max=(-1.294, -0.095, 2.695) surfaceSweepAabbOverlap=False
+Inner Wing Pylons (3/5) (1.480, -0.150, 1.650)
+  AAM1_single min=(1.304, -0.537, 0.417) max=(1.656, -0.127, 3.288) surfaceSweepAabbOverlap=False
+  AAM3_single min=(1.366, -0.486, 0.589) max=(1.594, -0.138, 3.144) surfaceSweepAabbOverlap=False
+  AGM1_single min=(1.369, -0.480, 0.873) max=(1.591, -0.132, 2.493) surfaceSweepAabbOverlap=False
+  bomb_125_single min=(1.377, -0.472, 0.741) max=(1.583, -0.129, 2.408) surfaceSweepAabbOverlap=False
+  bomb_250_single min=(1.337, -0.553, 0.424) max=(1.623, -0.129, 2.675) surfaceSweepAabbOverlap=False
+  bomb_500_single min=(1.270, -0.701, 0.385) max=(1.690, -0.143, 3.117) surfaceSweepAabbOverlap=False
+  RocketPod1_single min=(1.294, -0.554, 0.621) max=(1.666, -0.095, 2.695) surfaceSweepAabbOverlap=False
+Outer Wing Pylons (2/6) (-2.720, -0.150, 1.100)
+  AAM1_single min=(-2.896, -0.537, -0.133) max=(-2.544, -0.127, 2.738) surfaceSweepAabbOverlap=False
+  AAM3_single min=(-2.834, -0.486, 0.039) max=(-2.606, -0.138, 2.594) surfaceSweepAabbOverlap=False
+  bomb_125_single min=(-2.823, -0.472, 0.191) max=(-2.617, -0.129, 1.858) surfaceSweepAabbOverlap=False
+  bomb_250_single min=(-2.863, -0.553, -0.126) max=(-2.577, -0.129, 2.125) surfaceSweepAabbOverlap=False
+  RocketPod1_single min=(-2.906, -0.554, 0.071) max=(-2.534, -0.095, 2.145) surfaceSweepAabbOverlap=False
+Outer Wing Pylons (2/6) (2.720, -0.150, 1.100)
+  AAM1_single min=(2.544, -0.537, -0.133) max=(2.896, -0.127, 2.738) surfaceSweepAabbOverlap=False
+  AAM3_single min=(2.606, -0.486, 0.039) max=(2.834, -0.138, 2.594) surfaceSweepAabbOverlap=False
+  bomb_125_single min=(2.617, -0.472, 0.191) max=(2.823, -0.129, 1.858) surfaceSweepAabbOverlap=False
+  bomb_250_single min=(2.577, -0.553, -0.126) max=(2.863, -0.129, 2.125) surfaceSweepAabbOverlap=False
+  RocketPod1_single min=(2.534, -0.554, 0.071) max=(2.906, -0.095, 2.145) surfaceSweepAabbOverlap=False
+Wingtip Rails (1/7) (-4.030, -0.100, 0.150)
+  AAM3_single min=(-4.144, -0.436, -0.911) max=(-3.916, -0.088, 1.644) surfaceSweepAabbOverlap=False
+Wingtip Rails (1/7) (4.030, -0.100, 0.150)
+  AAM3_single min=(3.916, -0.436, -0.911) max=(4.144, -0.088, 1.644) surfaceSweepAabbOverlap=False
+Centerline Pylon (4) (0.000, -0.350, 2.250)
+  bomb_125_single min=(-0.103, -0.672, 1.341) max=(0.103, -0.329, 3.008) surfaceSweepAabbOverlap=False
+  bomb_250_single min=(-0.143, -0.753, 1.024) max=(0.143, -0.329, 3.275) surfaceSweepAabbOverlap=False
+PASS seven external mounts; exterior cockpit present. AABB sweep sampled local X deflections -45 to +45 degrees. Not an in-game firing or separation test.

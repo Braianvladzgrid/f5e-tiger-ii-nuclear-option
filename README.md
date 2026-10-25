@@ -17,8 +17,14 @@ not an authentic F-5 systems simulation. The source instruments are supplemented
 
 The exterior includes the separate source pilot model. The twin native
 afterburner flames retain their ignition/flicker with a parent scale fitted to
-the nozzles. These latest visual changes have passed editor preview/build;
-in-game confirmation and a full-power maximum-speed run are still pending.
+the nozzles. Exterior pilot visibility and both flame ignition/extinction were
+confirmed in game. A clean-loadout controlled flight reached about 1835 km/h
+at 1735 m MSL; this is not a performance certification for all loads/altitudes.
+
+Known critical issue: structural damage occurred during automatic deceleration
+from supersonic flight, including a repeat with the altitude target held fixed.
+The aircraft is still a development prototype. A candidate with extra hull-seam
+clearance failed the repeat and was reverted; it is not the packaged build.
 
 The model has its own silhouette icon, source landing-gear folding tracks,
 three native wheel-contact assemblies, and seven single-store external stations (two wingtip rails, four underwing pylons, one centerline pylon). Only IRM-S2 singles are allowed on the wingtip rails; centerline stores are limited to 125/250 kg bombs for ground clearance.

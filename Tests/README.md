@@ -18,9 +18,14 @@ Camera state/pan/tilt is logged without overriding camera input.
 
 `full_power` disables the fixture's cruise-speed throttle hold after `takeoff`;
 the aircraft still uses native forces with altitude/attitude control. `cruise`
-restores the original hold. Log both nozzle afterburner amounts and flame renderer
+restores speed hold while preserving the current altitude target. Log both nozzle afterburner amounts and flame renderer
 states when testing ignition at throttle 1 and extinction below 0.9. Never infer
 maximum speed from a cruise-hold run. Rewired bindings are read after isReady.
+The full-power altitude target is 1500 m above the runway; the old 300 m
+target intersected terrain after a long straight run. Monitor terrain and end
+the run before mountains or map limits. `view_side` / `view_back` frame an
+already selected orbit camera for visual inspection only, without certifying
+the user's camera mappings.
 
 The first landing probe incorrectly waited for IsLanded before braking; the
 second incorrectly latched stale wheel-contact state immediately after a fixture
