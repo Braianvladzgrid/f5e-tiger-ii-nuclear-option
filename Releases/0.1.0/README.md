@@ -9,7 +9,8 @@ Exterior and cockpit use the FlightGear F-5E by Prestes Hangar / Dave Culp /
 FGUK / Zexe. Model license: CC BY-NC-SA 3.0. This adaptation is free and
 noncommercial, with attribution and the original editable model preserved in
 `SourceAssets/F5E-original-source.zip`. See the model license and credits in
-`Assets/Blueprinter/Mods/F5`.
+`Assets/Blueprinter/Mods/F5`. Original integration scripts are MIT-licensed;
+see LICENSE-code.txt. The model and its derivatives retain CC BY-NC-SA 3.0.
 
 The first integration uses native FS-12 flight, damage, cockpit displays and
 weapon systems. Native pitch surfaces are moved aft and reversed for the F-5
@@ -52,3 +53,5 @@ multiplayer synchronization, every permitted weapon/load combination and
 performance across altitudes. These are not certified by the local fixture.
 
 
+
+Download the beta ZIP from the [GitHub release](https://github.com/Braianvladzgrid/f5e-tiger-ii-nuclear-option/releases/tag/v0.1.0).
