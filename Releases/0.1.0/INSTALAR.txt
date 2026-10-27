@@ -1,0 +1,25 @@
+F-5E TIGER II - 0.1.0 BETA
+
+Avion jugable de tier 2, precio 14 millones.
+Requiere Nuclear Option 0.34.2, BepInEx y Blueprinter 2.0.1.
+
+Con el juego cerrado, copiar juntos:
+  F5E_TigerII_0.1.0.nobp
+  F5FlightSupport.dll
+a:
+  BepInEx/plugins/com.nikkorap.blueprinter/addons/vladzgrid.f5/
+
+Reiniciar el juego y crear un avion nuevo. No instalar F5TestProbe.dll.
+El paquete no incluye el diagnostico temporal ni dependencias del juego.
+
+Incluye icono propio, piloto exterior, postcombustion animada, instrumentos
+vivos/HUD, tren animado, siete estaciones externas y sistemas nativos.
+La maniobra de prueba alcanzo 1835 km/h y completo dos desaceleraciones sin
+dano; la aproximacion corta y el frenado conservaron las 28 piezas intactas.
+
+Es una adaptacion sobre sistemas nativos, con balance propio del juego.
+No reproduce todos los sistemas reales del F-5. El manejo manual completo
+y el multijugador siguen sin certificacion. Ver TESTING.md.
+
+Modelo CC BY-NC-SA 3.0: uso gratuito/no comercial, atribucion y compartir
+las adaptaciones segun la licencia incluida. Ver CREDITS.md.

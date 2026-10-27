@@ -30,3 +30,16 @@ the user's camera mappings.
 The first landing probe incorrectly waited for IsLanded before braking; the
 second incorrectly latched stale wheel-contact state immediately after a fixture
 teleport. Both are failed test setups, not successful landing evidence.
+
+
+Use a noncombat scenario for flight acceptance. Free Flight - Heartland includes
+armed carriers: the Oct 26 first-damage trace proved a missile hit before the
+observed self contacts. create-flight-validation-mission.py generates a separate
+user mission from the owned game's temporary mission, assigning all bases/units
+to Boscali. It does not disable aircraft damage or physics. Do not distribute
+the generated game mission as part of the aircraft addon.
+
+The probe traces the first damage/joint-break calls with stack traces. The
+trace is bounded per game session. Restart the game when a fresh first-event
+trace is needed. The approach command should be used on a fresh aircraft near
+a land airbase; a distant ship/invalid runway can make the fixture fail.

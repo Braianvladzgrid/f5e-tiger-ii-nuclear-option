@@ -1,6 +1,10 @@
-# F-5E development verification
+# F-5E verification history
 
-Nuclear Option 0.34.2 / Blueprinter 2.0.1. Updated 2026-10-21.
+Current status: first playable 0.1.0 beta. See the final 2026-10-26 entry and
+Validation/build22-safe-flight26-summary.json. Earlier pending/failure notes are
+historical, not a statement that those checks remain unperformed.
+
+Nuclear Option 0.34.2 / Blueprinter 2.0.1. Latest status 2026-10-26. Historical entries below describe the builds at the time.
 
 Verified in game on 2026-10-18:
 - Dedicated catalog silhouette, tier 2 and $14m purchase.
@@ -243,3 +247,39 @@ Build 19 verification completed 2026-10-22:
 - Supersonic slowdown/damage diagnosis remains open. Keep prototype status.
   The game was closed and the temporary probe DLL removed from the addon;
   next launch uses normal controls.
+
+
+2026-10-26 final build-22 validation and correction of slowdown diagnosis:
+- No production physics/geometry changes were required in this session. Installed
+  bundle remains 7a971eda6d086f847f078baa10d9c62c21ad472b8477cfc5f205a39250a19bb6;
+  runtime remains f4ec2f5b7c5b2f763cb0e2cc22aa7c3ebe3bdb2402891ae6981f44dc55308f85.
+- Added temporary first-damage/joint-break stack tracing. The first damage in
+  the combat repeat came from Missile.PenetrateObject -> ArmorPenetrate, followed
+  by missile fragmentation/blast. Self contacts occurred after damage. Thus
+  self contacts alone were insufficient evidence of spontaneous failure.
+- Made a local copy of the mission with every base/unit assigned to Boscali and
+  no AI aircraft. The aircraft retained normal collision, damage and forces.
+- Two full-power acceleration/deceleration cycles passed. 373 one-second
+  samples before the separate approach-setup error showed all 28 parts at 100.
+  Peak observed speed was 1834.81 km/h, full-power altitude about 1735 m MSL.
+  It slowed through transonic to approximately 650 km/h without structural damage.
+- Both native afterburners ignited and extinguished over both cycles; flames
+  were visually visible in orbit. Cockpit -> Orbit -> TV -> Cockpit switches
+  preserved health. A brief numpad pan tap changed the logged orbit angle, but
+  does not certify the user's joystick sensitivity or continuous orbit control.
+- Attempting the placed-approach command far from a land runway returned null
+  runway data, released fixture control and did not establish a landing result.
+  This is retained as a failed fixture setup. Restarted the mission and used a
+  fresh aircraft near Maris for the separate approach check.
+- The fresh placed approach at 95 m/s, followed by normal wheel contact and
+  commanded braking, stopped with all 28 parts at 100 (00:12:29.517 UTC, Oct 27 /
+  Oct 26 local). This is not a manually flown return or full landing circuit.
+- Previous native gun/mixed-store firing checks remain applicable: production
+  weapons and flight support are unchanged. Target impacts remain unverified.
+- The reported spontaneous supersonic slowdown blocker was not reproduced in
+  the noncombat repeats. Do not claim a proven cause for older untraced crashes.
+- Release scope: first playable beta. Authentic F-5 performance/avionics, every
+  loadout/altitude, full manual controller handling and multiplayer are not certified.
+- Local evidence: work/f5/failure-trace-build22-missile26.txt,
+  test-telemetry-build22-safe26-full.txt, test-telemetry-build22-landing26.txt
+  and corresponding Player logs. No test plugin is included in the release.

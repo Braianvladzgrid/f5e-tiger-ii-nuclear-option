@@ -1,7 +1,9 @@
 # F-5E Tiger II for Nuclear Option
 
-Development prototype: tier 2, $14,000,000. Blueprinter 2.0.1, Nuclear Option
-0.34.2 and Unity 2022.3.62f2. Native takeoff and a short sustained flight have been tested; full validation is pending. See TESTING.md.
+First playable release (0.1.0 beta): tier 2, $14,000,000. Blueprinter 2.0.1, Nuclear Option
+0.34.2 and Unity 2022.3.62f2. Native-force takeoff, two supersonic power cycles,
+gear cycling, camera switching, weapons and a short placed approach/stop have
+been checked. See TESTING.md for evidence and limits.
 
 Exterior and cockpit use the FlightGear F-5E by Prestes Hangar / Dave Culp /
 FGUK / Zexe. Model license: CC BY-NC-SA 3.0. This adaptation is free and
@@ -21,10 +23,13 @@ the nozzles. Exterior pilot visibility and both flame ignition/extinction were
 confirmed in game. A clean-loadout controlled flight reached about 1835 km/h
 at 1735 m MSL; this is not a performance certification for all loads/altitudes.
 
-Known critical issue: structural damage occurred during automatic deceleration
-from supersonic flight, including a repeat with the altitude target held fixed.
-The aircraft is still a development prototype. A candidate with extra hull-seam
-clearance failed the repeat and was reverted; it is not the packaged build.
+The suspected spontaneous slowdown failure was investigated with first-damage
+stack traces. The combat repeat began with a missile penetrating the aircraft,
+followed by blast damage and self contacts. Two acceleration/deceleration cycles
+in a local noncombat scenario then preserved all 28 parts at 100 health. Normal
+damage and collisions were retained; no structural-strength workaround was added.
+The earlier hull-clearance candidate is not included. Individual earlier crashes
+without first-damage traces cannot be retroactively assigned a proven cause.
 
 The model has its own silhouette icon, source landing-gear folding tracks,
 three native wheel-contact assemblies, and seven single-store external stations (two wingtip rails, four underwing pylons, one centerline pylon). Only IRM-S2 singles are allowed on the wingtip rails; centerline stores are limited to 125/250 kg bombs for ground clearance.
@@ -42,8 +47,8 @@ with `RuntimeSupport/compile-runtime.ps1`. Install the compiled `.nobp` and
 `BepInEx/plugins/com.nikkorap.blueprinter/addons/vladzgrid.f5/`.
 Restart Nuclear Option and spawn a new aircraft after each update.
 
-Do not publish a stable release until fresh-spawn, taxi, braking, takeoff,
-pitch/roll/yaw, all cameras, weapons, gear retraction/doors, landing and logs
-have been checked inside the game.
+Remaining broader checks: full manual-controller flight/landing circuits,
+multiplayer synchronization, every permitted weapon/load combination and
+performance across altitudes. These are not certified by the local fixture.
 
 

@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-26",
+  "build": 22,
+  "scenario": "local clone of Heartland with all bases and units Boscali, AI aircraft limit 0",
+  "test_method": "native forces and normal collision/damage; temporary input and runway placement fixture",
+  "samples": 373,
+  "peak_speed_kmh": 1834.8066000000001,
+  "minimum_part_health": 100.0,
+  "minimum_parts_in_samples": 28,
+  "last_sample_before_failed_approach_setup": {
+    "utc": "2026-10-27T00:07:05.5914976Z",
+    "speed_mps": 180.4335,
+    "altitude_msl_m": 1670.272,
+    "parts": 28,
+    "minimum_health": 100.0
+  },
+  "commands": [
+    {
+      "time": "2026-10-27T00:01:09.9263134Z",
+      "command": "place_runway"
+    },
+    {
+      "time": "2026-10-27T00:01:26.9841407Z",
+      "command": "takeoff"
+    },
+    {
+      "time": "2026-10-27T00:01:47.0921463Z",
+      "command": "full_power"
+    },
+    {
+      "time": "2026-10-27T00:02:09.1856027Z",
+      "command": "gear_up"
+    },
+    {
+      "time": "2026-10-27T00:03:06.5180718Z",
+      "command": "cruise"
+    },
+    {
+      "time": "2026-10-27T00:04:35.9799056Z",
+      "command": "full_power"
+    },
+    {
+      "time": "2026-10-27T00:05:34.2174084Z",
+      "command": "cruise"
+    },
+    {
+      "time": "2026-10-27T00:06:48.5118004Z",
+      "command": "gear_down"
+    }
+  ],
+  "two_supersonic_acceleration_deceleration_cycles": "PASS, all 28 parts at 100; both afterburner flames enable at full power and disable below 0.9 throttle",
+  "camera_cycle": "Cockpit -> Orbit -> TV -> Cockpit; all 28 parts at 100",
+  "prior_failure_diagnosis": "First recorded damage in the combat repeat is Missile.PenetrateObject -> DamageEffects.ArmorPenetrate; blast and self contacts follow. This does not prove every earlier failure had the same cause.",
+  "landing": {
+    "result": "PASS, short placed approach followed by native forces/wheel contacts and commanded braking",
+    "stop_utc": "2026-10-27T00:12:29.5177727Z",
+    "parts": 28,
+    "minimum_health": 100,
+    "telemetry": "work/f5/test-telemetry-build22-landing26.txt"
+  },
+  "limitations": [
+    "No manual-controller certification",
+    "No full landing circuit",
+    "Not all loadouts/altitudes tested",
+    "No multiplayer validation"
+  ],
+  "telemetry": "work/f5/test-telemetry-build22-safe26-full.txt",
+  "combat_trace": "work/f5/failure-trace-build22-missile26.txt",
+  "bundle_sha256": "7a971eda6d086f847f078baa10d9c62c21ad472b8477cfc5f205a39250a19bb6",
+  "runtime_sha256": "f4ec2f5b7c5b2f763cb0e2cc22aa7c3ebe3bdb2402891ae6981f44dc55308f85",
+  "status": "first playable 0.1.0 beta; local acceptance checks passed within stated limits"
+}

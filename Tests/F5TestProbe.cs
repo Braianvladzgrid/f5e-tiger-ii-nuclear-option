@@ -16,7 +16,16 @@ public sealed class F5TestProbe:BaseUnityPlugin {
  bool bindingsLogged; float next; static int launchStation=-1; static float launchUntil,launchReport;
  static object Field(object o,string n)=>AccessTools.Field(o.GetType(),n)?.GetValue(o);
  static bool Own(Aircraft a)=>a&&a.definition&&a.definition.jsonKey=="F5E_TigerII";
- void Awake(){new Harmony("local.f5.testprobe").PatchAll(typeof(F5TestProbe));}
+ static int traceCount;
+ void Awake(){var h=new Harmony("local.f5.testprobe");h.PatchAll(typeof(F5TestProbe));
+  foreach(var type in typeof(AeroPart).Assembly.GetTypes().Where(t=>t.Name=="UnitPart"||t.Name=="AeroPart"||t.Name.Contains("Tensor")))
+   foreach(var method in type.GetMethods(System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.DeclaredOnly).Where(m=>m.Name=="ApplyDamage"||m.Name=="Part_OnTensorBreak"||m.Name=="OnJointBreak"))
+    h.Patch(method,prefix:new HarmonyMethod(typeof(F5TestProbe),nameof(TraceFailure)));
+ }
+ static void TraceFailure(object __instance,System.Reflection.MethodBase __originalMethod,object[] __args){
+  var part=__instance as AeroPart;if(part==null||!Own(part.parentUnit as Aircraft)||traceCount++>35)return;
+  File.AppendAllText(Path.Combine(Folder,"failure-trace.txt"),DateTime.UtcNow.ToString("O")+" frame="+Time.frameCount+" part="+part.name+" hp="+part.hitPoints+" method="+__originalMethod.DeclaringType.Name+"."+__originalMethod.Name+" args="+string.Join(",",__args.Select(v=>v==null?"null":v.ToString()).ToArray())+Environment.NewLine+Environment.StackTrace+Environment.NewLine);
+ }
  string Guns(Aircraft a){return string.Join(";",a.weaponStations.Where(w=>w.WeaponInfo.gun).Select(w=>"station="+w.Number+" total="+w.GetAmmoTotal()+" loaded="+w.GetAmmoLoaded()+" safety="+w.SafetyIsOn(a)+" ready="+w.Ready()).ToArray());}
  void Log(string s){File.AppendAllText(Path.Combine(Folder,"test-telemetry.txt"),DateTime.UtcNow.ToString("O")+" "+s+Environment.NewLine);}
  void Update(){
@@ -100,7 +109,3 @@ public sealed class F5TestProbe:BaseUnityPlugin {
  [HarmonyPatch(typeof(Turbojet),"FixedUpdate"),HarmonyPrefix,HarmonyPriority(Priority.Last)]static void Engine(Aircraft ___aircraft,ControlInputs ___controlInputs){Inputs(___aircraft,___controlInputs);}
  [HarmonyPatch(typeof(LandingGear),"FixedUpdate"),HarmonyPrefix,HarmonyPriority(Priority.Last)]static void Gear(Aircraft ___aircraft,ControlInputs ___controlInputs){Inputs(___aircraft,___controlInputs);}
 }
-
-
-
-

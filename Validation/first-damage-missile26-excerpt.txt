@@ -1,0 +1,14 @@
+2026-10-26T23:51:18.4841179Z frame=41347 part=canard_L hp=100 method=AeroPart.ApplyDamage args=42,5,0,0,0
+  at System.Environment.get_StackTrace () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at F5TestProbe.TraceFailure (System.Object __instance, System.Reflection.MethodBase __originalMethod, System.Object[] __args) [0x00000] in <4cf13835078747408067912790496325>:0 
+  at AeroPart.DMD<AeroPart::ApplyDamage> (AeroPart , System.Single , System.Single , System.Single , System.Single ) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at Unit.UserCode_RpcDamage_1709046923 (System.Byte index, DamageInfo damageInfo) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at Aircraft.UserCode_RpcDamage_870168505 (System.Byte index, DamageInfo damageInfo) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at Aircraft.RpcDamage (System.Byte index, DamageInfo damageInfo) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at UnitPart.DMD<UnitPart::TakeDamage> (UnitPart , System.Single , System.Single , System.Single , System.Single , System.Single , PersistentID ) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at DamageEffects.ArmorPenetrate (UnityEngine.Vector3 position, UnityEngine.Vector3 velocity, System.Single muzzleVelocity, System.Single pierceDamage, System.Single blastDamage, PersistentID dealerID) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at Missile.PenetrateObject (IDamageable damageable, UnityEngine.Vector3 hitPoint, UnityEngine.Vector3 hitNormal) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at Missile.DMD<Missile::DetectCollisions> (Missile ) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at Missile.DMD<Missile::ServerFixedUpdate> (Missile ) [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+  at Missile.FixedUpdate () [0x00000] in <6fda19c08ef5445d835f84e9933959ab>:0 
+2026-10-26T23:51:18.4853227Z frame=41347 part=canard_L hp=100 method=UnitPart.ApplyDamage args=42,5,0,0,0
